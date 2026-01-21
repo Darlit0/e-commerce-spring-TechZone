@@ -1,6 +1,8 @@
 package com.TechZone.TechZone.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -24,6 +26,17 @@ public class Utilisateur {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @Column(name = "date_creation", nullable = false, updatable = false)
+    private java.time.LocalDateTime dateCreation;
+
+    @PrePersist
+    public void prePersist() {
+        // Si la date n'est pas fixée, on met la date et l'heure actuelles
+        if (this.dateCreation == null) {
+            this.dateCreation = LocalDateTime.now();
+        }
+    }
 
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
     @JsonIgnore
