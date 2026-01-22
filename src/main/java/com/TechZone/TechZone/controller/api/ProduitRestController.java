@@ -1,11 +1,10 @@
 package com.TechZone.TechZone.controller.api;
 
 import com.TechZone.TechZone.dto.request.ProduitCreateDto;
-import com.TechZone.TechZone.entity.Produit;
+import com.TechZone.TechZone.dto.response.ProduitResponse;
 import com.TechZone.TechZone.service.ProduitService;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
 import java.util.List;
 
 @RestController
@@ -19,22 +18,22 @@ public class ProduitRestController {
     }
 
     @GetMapping("/all")
-    public List<Produit> getAll() {
+    public List<ProduitResponse> getAll() {
         return produitService.listerProduits();
     }
 
     @GetMapping("/{id}")
-    public Produit getById(@PathVariable Long id) {
+    public ProduitResponse getById(@PathVariable Long id) {
         return produitService.trouverParId(id);
     }
 
     @PostMapping("/create")
-    public Produit create(@Valid @RequestBody ProduitCreateDto dto) {
+    public ProduitResponse create(@Valid @RequestBody ProduitCreateDto dto) {
         return produitService.creerProduit(dto);
     }
 
     @PutMapping("/update/{id}")
-    public Produit update(@PathVariable Long id, @RequestBody ProduitCreateDto dto) {
+    public ProduitResponse update(@PathVariable Long id, @RequestBody ProduitCreateDto dto) {
         return produitService.mettreAJourProduit(id, dto);
     }
 
