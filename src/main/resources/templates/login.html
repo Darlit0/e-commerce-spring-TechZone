@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${titre}">TechZone - Login</title>
+    <title>TechZone - Connexion</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,6 +21,7 @@
         h1 {
             color: #2c3e50;
             text-align: center;
+            margin-bottom: 30px;
         }
         form {
             display: flex;
@@ -29,38 +30,149 @@
         label {
             margin-top: 10px;
             margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: bold;
         }
-        input[type="text"], input[type="password"] {
+        input[type="email"], input[type="password"] {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 14px;
         }
         button {
             margin-top: 20px;
-            padding: 10px;
+            padding: 12px;
             background-color: #27ae60;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
         }
         button:hover {
             background-color: #219150;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: #e74c3c;
+            background-color: #fadbd8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+        .success-message {
+            color: #27ae60;
+            background-color: #d5f4e6;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+        .register-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div th:replace="~{navbar}"></div>
     <div class="container">
-        <h1 th:text="${titre}">Login</h1>
-        <p th:text="${message}"></p>
-        <form th:action="@{/login}" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
+        <h1>Connexion</h1>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <form id="loginForm">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" required placeholder="exemple@email.com">
+            
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" name="password" required placeholder="••••••••">
+            
+            <button type="submit" id="loginBtn">Se connecter</button>
         </form>
+        <div class="register-link">
+            Pas encore inscrit ? <a href="/register">Créer un compte</a>
+        </div>
     </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errorDiv = document.getElementById('errorMessage');
+        const successDiv = document.getElementById('successMessage');
+        const loginBtn = document.getElementById('loginBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Réinitialisation des messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Connexion...';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/utilisateurs/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Stocker le token et les infos utilisateur
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userInfo', JSON.stringify(data.utilisateur));
+                    
+                    // Afficher message de succès
+                    successDiv.textContent = 'Connexion réussie ! Redirection...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirection selon le rôle
+                    setTimeout(() => {
+                        if (data.utilisateur.role === 'ADMIN') {
+                            window.location.href = '/admin';
+                        } else {
+                            window.location.href = '/';
+                        }
+                    }, 1000);
+                } else {
+                    const error = await response.text();
+                    errorDiv.textContent = error || 'Email ou mot de passe incorrect';
+                    errorDiv.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Se connecter';
+                }
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                errorDiv.textContent = 'Erreur de connexion au serveur';
+                errorDiv.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Se connecter';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -7,10 +7,14 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="logo">TechZone</a>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Accueil</a></li>
                 <li><a href="/admin">Admin</a></li>
-                <li><a href="/login">Connexion</a></li>
-                <li><a href="/register">Inscription</a></li>
+                <li id="loginLink"><a href="/login">Connexion</a></li>
+                <li id="registerLink"><a href="/register">Inscription</a></li>
+                <li id="logoutLink" style="display: none;">
+                    <a href="#" onclick="logout(event)" style="cursor: pointer;">Se déconnecter</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -54,5 +58,36 @@
             color: #27ae60;
         }
     </style>
+
+    <script>
+        // Vérifier si l'utilisateur est connecté
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            if (token && userInfo) {
+                // Utilisateur connecté
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('registerLink').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'block';
+            } else {
+                // Utilisateur non connecté
+                document.getElementById('loginLink').style.display = 'block';
+                document.getElementById('registerLink').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'none';
+            }
+        }
+
+        // Fonction de déconnexion
+        function logout(event) {
+            event.preventDefault();
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            window.location.href = '/';
+        }
+
+        // Vérifier l'authentification au chargement
+        checkAuth();
+    </script>
 </body>
 </html>

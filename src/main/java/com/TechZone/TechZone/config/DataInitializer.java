@@ -4,6 +4,7 @@ import com.TechZone.TechZone.entity.*;
 import com.TechZone.TechZone.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.transaction.Transactional; // Important pour gérer les sessions proprement
 
 
@@ -13,14 +14,17 @@ public class DataInitializer implements CommandLineRunner {
     private final UtilisateurRepository utilisateurRepository;
     private final ProduitRepository produitRepository;
     private final CategorieRepository categorieRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    // Injection des 3 repositories
+    // Injection des 3 repositories + PasswordEncoder
     public DataInitializer(UtilisateurRepository utilisateurRepository, 
                            ProduitRepository produitRepository,
-                           CategorieRepository categorieRepository) {
+                           CategorieRepository categorieRepository,
+                           PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
         this.produitRepository = produitRepository;
         this.categorieRepository = categorieRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -51,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
         Utilisateur user = new Utilisateur();
         user.setNomUtilisateur("Alice Martin");
         user.setEmail("alice@test.com");
-        user.setMotDePasse("password123"); // Requis (nullable = false)
+        user.setMotDePasse(passwordEncoder.encode("password123")); // Mot de passe hashé
         user.setRole(Role.USER); // Requis (nullable = false)
         // user.setRole(Role.CLIENT); // Décommentez si vous avez mis en place l'Enum Role
 
