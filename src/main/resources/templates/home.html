@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titre}">TechZone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .produits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .produit-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .produit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .produit-nom {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .produit-categorie {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .produit-description {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .produit-prix {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 15px 0;
+        }
+        .produit-stock {
+            font-size: 14px;
+            color: #95a5a6;
+        }
+        .produit-stock.en-stock {
+            color: #27ae60;
+        }
+        .produit-stock.rupture {
+            color: #e74c3c;
+        }
+        .badge-promo {
+            display: inline-block;
+            background-color: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .no-products {
+            text-align: center;
+            color: #95a5a6;
+            padding: 50px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{navbar}"></div>
+    <div class="container">
+        <h1 th:text="${titre}">Bienvenue sur TechZone</h1>
+        
+        <div class="produits-grid" th:if="${not #lists.isEmpty(produits)}">
+            <div class="produit-card" th:each="produit : ${produits}">
+                <div class="produit-nom">
+                    <span th:text="${produit.nom}">Nom du produit</span>
+                    <span class="badge-promo" th:if="${produit.promotion}">PROMO</span>
+                </div>
+                <span class="produit-categorie" th:text="${produit.categorie.nom}">Catégorie</span>
+                <p class="produit-description" th:text="${produit.descriptionCourte}">Description du produit</p>
+                <div class="produit-prix" th:text="${produit.prix} + ' €'">0.00 €</div>
+                <div class="produit-stock" 
+                     th:classappend="${produit.stock > 0} ? 'en-stock' : 'rupture'"
+                     th:text="${produit.stock > 0} ? 'En stock : ' + ${produit.stock} + ' unité(s)' : 'Rupture de stock'">
+                    En stock
+                </div>
+            </div>
+        </div>
+        
+        <div class="no-products" th:if="${#lists.isEmpty(produits)}">
+            <p>Aucun produit disponible pour le moment.</p>
+        </div>
+    </div>
+</body>
+</html>

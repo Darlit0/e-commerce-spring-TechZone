@@ -7,6 +7,7 @@ public class ProduitResponse {
     private int stock;
     private boolean status;
     private String nomCategorie;
+    private String imagePath;
 
     public ProduitResponse(Long id, String nom, double prix, int stock, boolean status, String nomCategorie) {
         this.id = id;
@@ -65,5 +66,13 @@ public class ProduitResponse {
 
     public void setNomCategorie(String nomCategorie) {
         this.nomCategorie = nomCategorie;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

@@ -14,13 +14,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Configuration SIMPLE pour commencer : on autorise tout
         http
-            .csrf(csrf -> csrf.disable()) // Désactive la protection CSRF (inutile pour les API REST stateless)
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**").permitAll() // Laisse passer la console H2
-                .requestMatchers("/api/**").permitAll()        // Laisse passer votre API (pour tester)
-                .anyRequest().authenticated()                  // Le reste nécessite une connexion
+                .requestMatchers("/", "/home", "/login", "/register").permitAll()
+                .requestMatchers("/admin/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs").permitAll()
+                .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions(frame -> frame.disable())); // Nécessaire pour afficher H2
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
