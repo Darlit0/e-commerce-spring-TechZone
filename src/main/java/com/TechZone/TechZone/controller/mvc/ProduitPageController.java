@@ -43,7 +43,7 @@ public class ProduitPageController {
         // On envoie la liste des catégories à la vue
         model.addAttribute("listeCategories", CategorieService.listerCategories());
         
-        return "produit-form";
+        return "admin/produit-form";
     }
 
     // 2. ENREGISTRER
