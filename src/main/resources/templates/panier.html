@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier - TechZone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .panier-vide {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .panier-vide h2 {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        .panier-content {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .article-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .article-item:last-child {
+            border-bottom: none;
+        }
+        .article-info {
+            flex: 1;
+        }
+        .article-nom {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .article-prix {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .article-quantite {
+            font-size: 16px;
+            color: #3498db;
+            margin: 0 20px;
+        }
+        .article-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+            min-width: 100px;
+            text-align: right;
+        }
+        .panier-total {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panier-total h2 {
+            color: #2c3e50;
+            margin: 0;
+        }
+        .total-prix {
+            font-size: 32px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #219150;
+        }
+        .btn-secondary {
+            background-color: #3498db;
+            color: white;
+            margin-right: 15px;
+        }
+        .btn-secondary:hover {
+            background-color: #2980b9;
+        }
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{navbar}"></div>
+    
+    <div class="container">
+        <h1>Mon Panier</h1>
+        
+        <div id="loading" class="loading">
+            Chargement de votre panier...
+        </div>
+        
+        <div id="panier-vide" class="panier-vide" style="display: none;">
+            <h2>Votre panier est vide</h2>
+            <p>Ajoutez des produits pour commencer vos achats</p>
+            <a href="/" class="btn btn-primary">Continuer mes achats</a>
+        </div>
+        
+        <div id="panier-content" class="panier-content" style="display: none;">
+            <div id="articles-list"></div>
+            
+            <div class="panier-total">
+                <h2>Total</h2>
+                <span class="total-prix" id="total-prix">0.00 €</span>
+            </div>
+            
+            <div class="actions">
+                <a href="/" class="btn btn-secondary">Continuer mes achats</a>
+                <button class="btn btn-primary" onclick="validerCommande()">Valider la commande</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function chargerPanier() {
+            const userInfo = localStorage.getItem('userInfo');
+            
+            if (!userInfo) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            const user = JSON.parse(userInfo);
+            
+            fetch(`/api/panier/${user.id}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 404 || response.status === 500) {
+                        // Panier vide ou inexistant
+                        throw new Error('Panier vide');
+                    }
+                    throw new Error('Erreur lors du chargement du panier');
+                })
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    if (!data.articles || data.articles.length === 0) {
+                        document.getElementById('panier-vide').style.display = 'block';
+                    } else {
+                        afficherPanier(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('panier-vide').style.display = 'block';
+                });
+        }
+        
+        function afficherPanier(panier) {
+            const articlesList = document.getElementById('articles-list');
+            articlesList.innerHTML = '';
+            
+            panier.articles.forEach(article => {
+                const articleDiv = document.createElement('div');
+                articleDiv.className = 'article-item';
+                articleDiv.innerHTML = `
+                    <div class="article-info">
+                        <div class="article-nom">${article.nomProduit}</div>
+                        <div class="article-prix">${article.prixUnitaire.toFixed(2)} € / unité</div>
+                    </div>
+                    <div class="article-quantite">Quantité: ${article.quantite}</div>
+                    <div class="article-total">${article.sousTotal.toFixed(2)} €</div>
+                `;
+                articlesList.appendChild(articleDiv);
+            });
+            
+            document.getElementById('total-prix').textContent = panier.prixTotal.toFixed(2) + ' €';
+            document.getElementById('panier-content').style.display = 'block';
+            
+            // Mettre à jour le badge dans la navbar
+            updatePanierCount(panier.articles.length);
+        }
+        
+        function updatePanierCount(count) {
+            const badge = document.getElementById('panier-count');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+        
+        function validerCommande() {
+            alert('Fonctionnalité de validation de commande à implémenter');
+            // TODO: Implémenter la validation de commande
+        }
+        
+        // Charger le panier au démarrage
+        chargerPanier();
+    </script>
+</body>
+</html>

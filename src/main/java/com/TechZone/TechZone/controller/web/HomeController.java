@@ -1,4 +1,4 @@
-package com.TechZone.TechZone.controller;
+package com.TechZone.TechZone.controller.web;
 
 import com.TechZone.TechZone.entity.Produit;
 import com.TechZone.TechZone.repository.ProduitRepository;
@@ -37,5 +37,11 @@ public class HomeController {
         model.addAttribute("titre", "Inscription à TechZone");
         model.addAttribute("message", "Créez votre compte TechZone !");
         return "register";
+    }
+    
+    @GetMapping("/panier")
+    public String panier(Model model) {
+        model.addAttribute("titre", "Mon Panier - TechZone");
+        return "panier";
     }
 }

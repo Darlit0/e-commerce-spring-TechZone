@@ -10,6 +10,12 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="/">Accueil</a></li>
                 <li><a href="/admin">Admin</a></li>
+                <li id="panierLink" style="display: none;">
+                    <a href="/panier" style="position: relative;">
+                        Panier
+                        <span id="panier-count" class="panier-badge" style="display: none;">0</span>
+                    </a>
+                </li>
                 <li id="loginLink"><a href="/login">Connexion</a></li>
                 <li id="registerLink"><a href="/register">Inscription</a></li>
                 <li id="logoutLink" style="display: none;">
@@ -57,10 +63,23 @@
         .nav-links a:hover {
             color: #27ae60;
         }
+        .panier-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 18px;
+            text-align: center;
+        }
     </style>
 
     <script>
-        // Vérifier si l'utilisateur est connecté
+        // Vérifier l'authentification et afficher les liens appropriés
         function checkAuth() {
             const token = localStorage.getItem('authToken');
             const userInfo = localStorage.getItem('userInfo');
@@ -70,12 +89,38 @@
                 document.getElementById('loginLink').style.display = 'none';
                 document.getElementById('registerLink').style.display = 'none';
                 document.getElementById('logoutLink').style.display = 'block';
+                document.getElementById('panierLink').style.display = 'block';
+                
+                // Charger le nombre d'articles dans le panier
+                const user = JSON.parse(userInfo);
+                chargerCompteurPanier(user.id);
             } else {
                 // Utilisateur non connecté
                 document.getElementById('loginLink').style.display = 'block';
                 document.getElementById('registerLink').style.display = 'block';
                 document.getElementById('logoutLink').style.display = 'none';
+                document.getElementById('panierLink').style.display = 'none';
             }
+        }
+        
+        function chargerCompteurPanier(utilisateurId) {
+            fetch(`/api/panier/${utilisateurId}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Panier vide');
+                })
+                .then(data => {
+                    const badge = document.getElementById('panier-count');
+                    if (data.articles && data.articles.length > 0) {
+                        badge.textContent = data.articles.length;
+                        badge.style.display = 'inline-block';
+                    }
+                })
+                .catch(error => {
+                    // Pas de panier ou vide, on ne fait rien
+                });
         }
 
         // Fonction de déconnexion

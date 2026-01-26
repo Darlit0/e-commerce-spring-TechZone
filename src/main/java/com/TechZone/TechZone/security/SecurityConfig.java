@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home", "/login", "/register").permitAll()
+                .requestMatchers("/", "/home", "/login", "/register", "/panier").permitAll()
                 .requestMatchers("/admin/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()

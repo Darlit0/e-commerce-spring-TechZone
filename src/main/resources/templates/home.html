@@ -90,6 +90,25 @@
             padding: 50px;
             font-size: 18px;
         }
+        .btn-panier {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        .btn-panier:hover {
+            background-color: #2980b9;
+        }
+        .btn-panier:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -111,6 +130,12 @@
                      th:text="${produit.stock > 0} ? 'En stock : ' + ${produit.stock} + ' unité(s)' : 'Rupture de stock'">
                     En stock
                 </div>
+                <button class="btn-panier" 
+                        th:attr="data-produit-id=${produit.id}"
+                        th:disabled="${produit.stock <= 0}"
+                        onclick="ajouterAuPanier(this)">
+                    Ajouter au panier
+                </button>
             </div>
         </div>
         
@@ -118,5 +143,68 @@
             <p>Aucun produit disponible pour le moment.</p>
         </div>
     </div>
+    
+    <script>
+        function ajouterAuPanier(button) {
+            const userInfo = localStorage.getItem('userInfo');
+            
+            if (!userInfo) {
+                alert('Vous devez être connecté pour ajouter des articles au panier');
+                window.location.href = '/login';
+                return;
+            }
+            
+            const user = JSON.parse(userInfo);
+            const produitId = button.getAttribute('data-produit-id');
+            
+            button.disabled = true;
+            button.textContent = 'Ajout en cours...';
+            
+            fetch('/api/panier/ajouter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    produitId: parseInt(produitId),
+                    quantite: 1,
+                    utilisateurId: user.id
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Erreur lors de l\'ajout au panier');
+                }
+            })
+            .then(data => {
+                button.textContent = '✓ Ajouté';
+                button.style.backgroundColor = '#27ae60';
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.textContent = 'Ajouter au panier';
+                    button.style.backgroundColor = '';
+                }, 2000);
+                
+                // Mettre à jour le compteur du panier si présent
+                updatePanierCount(data.articles.length);
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'ajout au panier');
+                button.disabled = false;
+                button.textContent = 'Ajouter au panier';
+            });
+        }
+        
+        function updatePanierCount(count) {
+            const badge = document.getElementById('panier-count');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+    </script>
 </body>
 </html>

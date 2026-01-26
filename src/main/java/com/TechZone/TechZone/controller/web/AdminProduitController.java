@@ -1,4 +1,4 @@
-package com.TechZone.TechZone.controller;
+package com.TechZone.TechZone.controller.web;
 
 import com.TechZone.TechZone.entity.Categorie;
 import com.TechZone.TechZone.entity.Produit;

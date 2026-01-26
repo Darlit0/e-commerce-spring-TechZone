@@ -10,7 +10,7 @@ public class AjoutPanierDto {
     @Min(value = 1, message = "La quantité doit être au moins de 1")
     private int quantite;
     
-    // Pour l'instant on passe l'ID user ici (plus tard on le prendra du Token) 
+    // Pour l'instant on passe l'ID user ici (plus tard on le prendra du Token)
     @NotNull
     private Long utilisateurId; 
 

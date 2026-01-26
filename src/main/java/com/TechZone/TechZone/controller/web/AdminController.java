@@ -1,4 +1,4 @@
-package com.TechZone.TechZone.controller;
+package com.TechZone.TechZone.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
