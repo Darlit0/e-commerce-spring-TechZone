@@ -69,7 +69,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // --- ÉTAPE 5 : CRÉER UNE LIGNE DE COMMANDE ---
         LigneCommande ligne1 = new LigneCommande();
-        ligne1.setQuantite(2);
+        ligne1.setQuantite(2);  
         
         // Liaison Ligne -> Produit
         ligne1.setProduit(iphone); 
