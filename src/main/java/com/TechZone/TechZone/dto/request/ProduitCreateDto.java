@@ -26,6 +26,10 @@ public class ProduitCreateDto {
     @NotNull(message = "La catégorie est obligatoire")
     private Long categorieId;
 
+    @NotBlank(message = "L'URL de l'image est obligatoire")
+    private String imageUrl;
+
+
     // Getters and Setters
     public String getNom() { return nom; }
     public void setNom(String nom) { this.nom = nom; }
@@ -47,4 +51,7 @@ public class ProduitCreateDto {
 
     public Long getCategorieId() { return categorieId; }
     public void setCategorieId(Long categorieId) { this.categorieId = categorieId; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }
