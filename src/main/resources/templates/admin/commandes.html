@@ -48,6 +48,9 @@
     </style>
 </head>
 <body>
+
+    <div th:replace="~{navbar :: navbar}"></div>
+
     <h1>📦 Gestion des Commandes</h1>
     
     <div th:if="${listeCommandes != null and !listeCommandes.isEmpty()}">

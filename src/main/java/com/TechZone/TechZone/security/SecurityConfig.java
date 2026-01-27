@@ -19,7 +19,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 //.requestMatchers("/admin/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/", "/boutique/**", "/produits/**", "/api/**", "/css/**", "/js/**", "/webjars/**", "/error", "h2-console/**").permitAll()
+                .requestMatchers("/", "/boutique/**", "/produits/**", "/api/**", "/css/**", "/js/**", "/webjars/**", "/error", "h2-console/**",
+                    "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll() // Swagger URLs
                 .anyRequest().authenticated()
             )
             // Utilise ma page login personnalisée
