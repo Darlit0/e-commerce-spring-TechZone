@@ -96,9 +96,5 @@ public class DataInitializer implements CommandLineRunner {
         admin.setMotDePasse(passwordEncoder.encode("admin123"));
         admin.setRole(Role.ADMIN);
         utilisateurRepository.save(admin);
-
-        System.out.println("✅ DONNÉES AVEC CATÉGORIE CHARGÉES !");
-        System.out.println("👉 Vérifiez la table PRODUIT : la colonne CATEGORIE_ID doit valoir " + elec.getId());
-        System.out.println("💰 Total de la commande (calculé via @Transient) : " + commande1.getTotal() + " €");
     }
 }

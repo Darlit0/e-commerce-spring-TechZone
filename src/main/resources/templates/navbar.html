@@ -25,7 +25,9 @@
             
             <li sec:authorize="isAuthenticated()">
                 <span sec:authentication="name">Utilisateur</span>
-                <a href="/logout">🚪 Déconnexion</a>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit">🚪 Déconnexion</button>
+                </form>
             </li>
         </ul>
     </nav>

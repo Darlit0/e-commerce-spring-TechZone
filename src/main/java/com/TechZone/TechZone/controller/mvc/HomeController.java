@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/index")
 public class HomeController {
 
-    private final ProduitService produitService; // On réutilise votre Service existant !
+    private final ProduitService produitService;
 
     public HomeController(ProduitService produitService) {
         this.produitService = produitService;
@@ -17,7 +17,7 @@ public class HomeController {
 
     @GetMapping
     public String versionJs() {
-        return "index"; // Retourne le nom de la vue (index.html)
+        return "index";
 }
 
 }
