@@ -25,7 +25,7 @@ public class BoutiqueController {
         // 2. On la donne à la vue
         model.addAttribute("listeProduits", produits);
 
-        return "boutique";
+        return "/boutique";
     }
 
     @GetMapping("/version-js")

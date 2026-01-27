@@ -6,19 +6,21 @@ import com.TechZone.TechZone.dto.response.ProduitResponse;
 import com.TechZone.TechZone.service.CategorieService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/produits") // L'URL sera http://localhost:8080/produits
-public class ProduitPageController {
+public class AdminProduitPageController {
 
     private final ProduitService produitService;
     private final CategorieService CategorieService;
 
     // On injecte le Service (qui marche déjà pour ton API)
-    public ProduitPageController(ProduitService produitService, CategorieService categorieService) {
+    public AdminProduitPageController(ProduitService produitService, CategorieService categorieService) {
         this.produitService = produitService;
         this.CategorieService = categorieService;
     }
@@ -48,8 +50,13 @@ public class ProduitPageController {
 
     // 2. ENREGISTRER
     @PostMapping("/enregistrer")
-    public String enregistrerProduit(@ModelAttribute ProduitCreateDto produitRequest) {
+    public String enregistrerProduit(@Valid @ModelAttribute("produitRequest") ProduitCreateDto produitRequest, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            // Si erreur, on renvoie la liste des catégories au formulaire
+            model.addAttribute("listeCategories", CategorieService.listerCategories());
+            return "admin/produit-form";
+        }
         produitService.creerProduit(produitRequest);
-        return "redirect:/produits";
+        return "redirect:/admin/dashboard";
     }
 }

@@ -56,7 +56,7 @@ public class DataInitializer implements CommandLineRunner {
         user.setNomUtilisateur("Alice Martin");
         user.setEmail("alice@test.com");
         user.setMotDePasse(passwordEncoder.encode("password123")); // Mot de passe hashé
-        user.setRole(Role.USER); // Requis (nullable = false)
+        user.setRole(Role.ADMIN); // Requis (nullable = false)
         // user.setRole(Role.CLIENT); // Décommentez si vous avez mis en place l'Enum Role
 
         // --- ÉTAPE 4 : CRÉER UNE COMMANDE ---
@@ -88,6 +88,14 @@ public class DataInitializer implements CommandLineRunner {
         // Grâce au CascadeType.ALL sur Utilisateur -> Commandes -> Lignes,
         // une seule sauvegarde suffit pour tout enregistrer !
         utilisateurRepository.save(user);
+
+        // --- ÉTAPE 8 : CRÉER UN UTILISATEUR ADMIN ---
+        Utilisateur admin = new Utilisateur();
+        admin.setNomUtilisateur("Admin");
+        admin.setEmail("admin@test.com");
+        admin.setMotDePasse(passwordEncoder.encode("admin123"));
+        admin.setRole(Role.ADMIN);
+        utilisateurRepository.save(admin);
 
         System.out.println("✅ DONNÉES AVEC CATÉGORIE CHARGÉES !");
         System.out.println("👉 Vérifiez la table PRODUIT : la colonne CATEGORIE_ID doit valoir " + elec.getId());
