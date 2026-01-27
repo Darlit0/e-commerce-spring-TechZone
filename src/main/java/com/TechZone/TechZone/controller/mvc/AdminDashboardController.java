@@ -1,8 +1,8 @@
 package com.TechZone.TechZone.controller.mvc;
 
 import com.TechZone.TechZone.repository.CategorieRepository;
-import com.TechZone.TechZone.repository.ProduitRepository;
 import com.TechZone.TechZone.repository.UtilisateurRepository;
+import com.TechZone.TechZone.service.ProduitService; // Import du Service
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,19 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminDashboardController {
 
     private final UtilisateurRepository utilisateurRepository;
-    private final ProduitRepository produitRepository;
+    private final ProduitService produitService; // On remplace le Repository par le Service
     private final CategorieRepository categorieRepository;
 
-    public AdminDashboardController(UtilisateurRepository utilisateurRepository, ProduitRepository produitRepository, CategorieRepository categorieRepository) {
+    // Injection du Service Produit
+    public AdminDashboardController(UtilisateurRepository utilisateurRepository, 
+                                    ProduitService produitService, 
+                                    CategorieRepository categorieRepository) {
         this.utilisateurRepository = utilisateurRepository;
-        this.produitRepository = produitRepository;
+        this.produitService = produitService;
         this.categorieRepository = categorieRepository;
     }
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model) {
+        // Utilisateurs (On garde le repository pour l'instant si vous n'avez pas de UserDTO)
         model.addAttribute("utilisateurs", utilisateurRepository.findAll());
-        model.addAttribute("produits", produitRepository.findAll());
+        
+        // Produits : ON UTILISE LE SERVICE !
+        // Cela va renvoyer une List<ProduitResponse> compatible avec votre HTML
+        model.addAttribute("produits", produitService.listerProduits()); 
+        
+        // Catégories
         model.addAttribute("categories", categorieRepository.findAll());
 
         return "admin/dashboard";

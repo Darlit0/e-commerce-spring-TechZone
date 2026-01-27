@@ -4,37 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <title>TechZone - Accueil</title>
+    <style>
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .grid-produits { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .carte { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .carte:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .img-box { height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .img-box img { max-height: 100%; max-width: 100%; object-fit: cover; }
+        .info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.8em; font-weight: bold; margin-bottom: 5px; }
+        .bg-ok { background-color: #28a745; }
+        .bg-ko { background-color: #dc3545; }
+        .bg-info { background-color: #17a2b8; }
+        .pagination { display: flex; justify-content: center; gap: 5px; margin-top: 40px; }
+        .pagination a { padding: 8px 12px; border: 1px solid #ddd; text-decoration: none; color: #333; border-radius: 4px; }
+        .pagination a.actif { background-color: #007bff; color: white; border-color: #007bff; }
+    </style>
 </head>
 <body>
-    <!-- Inclusion de la navbar -->
-    <div th:replace="~{navbar :: navbar}"></div>
-    
-    <h1>Boutique</h1>
-    <div id="container-produits">Chargement...</div>
 
-    <script>
-        // Appel à votre API qui fonctionne "parfaitement"
-        fetch('/api/produits/all')
-            .then(res => res.json())
-            .then(data => {
-                const div = document.getElementById('container-produits');
-                div.innerHTML = ""; // Vider le texte de chargement
+    <div th:replace="~{navbar :: navbar}"></div>
+
+    <div class="container">
+        <h1 style="text-align: center;">Nos Produits</h1>
+
+        <div th:if="${produitPage.empty}" style="text-align: center; color: gray; margin-top: 50px;">
+            <h3>Aucun produit disponible.</h3>
+        </div>
+
+        <div class="grid-produits" th:unless="${produitPage.empty}">
+            <div th:each="produit : ${produitPage.content}" class="carte">
                 
-                data.forEach(p => {
-                    div.innerHTML += `
-                        <div>
-                            <h3>${p.nom}</h3>
-                            <img src="${p.image}" alt="${p.nom}">
-                            <p>Catégorie : ${p.categorie_id}</p>
-                            <p>Prix : ${p.prix} €</p>
-                            <p>Quantité : ${p.stock}</p>
-                            <p>Statut : ${p.statut}</p>
-                            <p>Description : ${p.description_courte}</p>
-                        </div>
-                        <hr/>
-                    `;
-                });
-            });
-    </script>
+                <div class="img-box">
+                    <img th:if="${produit.imagePath}" th:src="${produit.imagePath}" th:alt="${produit.nom}">
+                    <img th:unless="${produit.imagePath}" src="https://via.placeholder.com/250x180?text=No+Image" alt="Image défaut">
+                </div>
+
+                <div class="info">
+                    <div><span class="badge bg-info" th:text="${produit.nomCategorie}">Cat</span></div>
+                    <h3 th:text="${produit.nom}" style="margin: 10px 0;">Nom</h3>
+                    <div style="font-weight: bold; font-size: 1.2em; color: #333;">
+                        <span th:text="${produit.prix}">0</span> €
+                    </div>
+                    
+                    <div style="margin: 5px 0;">
+                        <span th:if="${produit.status}" class="badge bg-ok">En Stock</span>
+                        <span th:unless="${produit.status}" class="badge bg-ko">Rupture</span>
+                    </div>
+
+                    <p th:text="${produit.descriptionCourte}" style="color: #666; font-size: 0.9em; flex-grow: 1;">Desc...</p>
+                    
+                    <button style="background: #333; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px;">Ajouter</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination" th:if="${produitPage.totalPages > 1}">
+            <a th:if="${produitPage.hasPrevious()}" 
+               th:href="@{/index(page=${produitPage.number - 1}, size=${produitPage.size})}">&laquo;</a>
+
+            <span th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}">
+                <a th:href="@{/index(page=${i}, size=${produitPage.size})}"
+                   th:text="${i + 1}"
+                   th:class="${i == produitPage.number} ? 'actif' : ''">1</a>
+            </span>
+
+            <a th:if="${produitPage.hasNext()}" 
+               th:href="@{/index(page=${produitPage.number + 1}, size=${produitPage.size})}">&raquo;</a>
+        </div>
+    </div>
+
 </body>
 </html>

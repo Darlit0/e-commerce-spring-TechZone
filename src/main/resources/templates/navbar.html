@@ -9,7 +9,7 @@
     <!-- Fragment de navbar réutilisable -->
     <nav th:fragment="navbar">
         <ul>
-            <li><a href="/">🏠 Accueil</a></li>
+            <li><a href="/index">🏠 Accueil</a></li>
             
             <!-- Bouton Admin visible UNIQUEMENT si l'utilisateur a le rôle ADMIN -->
             <li sec:authorize="hasRole('ADMIN')">
