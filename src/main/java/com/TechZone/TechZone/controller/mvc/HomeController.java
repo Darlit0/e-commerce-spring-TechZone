@@ -1,15 +1,23 @@
 package com.TechZone.TechZone.controller.mvc;
 
+import com.TechZone.TechZone.service.ProduitService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-// ⚠️ ATTENTION : @Controller (pour le HTML) et PAS @RestController
-@Controller 
+
+@Controller
+@RequestMapping("/index")
 public class HomeController {
 
-    @GetMapping("/") // Quand on tape http://localhost:8080/
-    public String accueil() {
-        // Spring va chercher le fichier "index.html" dans les templates
-        return "index"; 
+    private final ProduitService produitService; // On réutilise votre Service existant !
+
+    public HomeController(ProduitService produitService) {
+        this.produitService = produitService;
     }
+
+    @GetMapping
+    public String versionJs() {
+        return "index"; // Retourne le nom de la vue (index.html)
+}
+
 }

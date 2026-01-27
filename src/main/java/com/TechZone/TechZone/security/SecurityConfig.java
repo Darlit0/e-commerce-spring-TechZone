@@ -1,9 +1,7 @@
 package com.TechZone.TechZone.security;
 
-import com.TechZone.TechZone.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,12 +17,16 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")) // Désactivation CSRF pour les API
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/**").permitAll()
-                //.requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/", "/boutique/**", "/produits/**", "/api/**", "/css/**", "/js/**", "/webjars/**", "/error").permitAll()
+                //.requestMatchers("/admin/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/", "/boutique/**", "/produits/**", "/api/**", "/css/**", "/js/**", "/webjars/**", "/error", "h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin(Customizer.withDefaults()) // Utilise la page de login par défaut de Spring
+            // Utilise ma page login personnalisée
+            .formLogin(form -> form
+                .loginPage("/login")
+                .permitAll()
+            ) 
             .logout(logout -> logout.permitAll());
 
         return http.build();
