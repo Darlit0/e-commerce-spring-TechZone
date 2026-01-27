@@ -4,13 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>TechZone - Accueil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Inclusion de la navbar -->
     <div th:replace="~{navbar :: navbar}"></div>
     
-    <h1>Boutique</h1>
-    <div id="container-produits">Chargement...</div>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">🛒 Boutique TechZone</h1>
+        <div id="container-produits" class="row g-4">
+            <div class="col-12 text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Appel à votre API qui fonctionne "parfaitement"
@@ -22,19 +31,24 @@
                 
                 data.forEach(p => {
                     div.innerHTML += `
-                        <div>
-                            <h3>${p.nom}</h3>
-                            <img src="${p.image}" alt="${p.nom}">
-                            <p>Catégorie : ${p.categorie_id}</p>
-                            <p>Prix : ${p.prix} €</p>
-                            <p>Quantité : ${p.stock}</p>
-                            <p>Statut : ${p.statut}</p>
-                            <p>Description : ${p.description_courte}</p>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="${p.image}" class="card-img-top" alt="${p.nom}" style="height: 200px; object-fit: cover;">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">${p.nom}</h5>
+                                    <p class="card-text text-muted">${p.description_courte || 'Pas de description'}</p>
+                                    <div class="mt-auto">
+                                        <p class="mb-1"><strong>Prix :</strong> ${p.prix} €</p>
+                                        <p class="mb-3"><span class="badge ${p.statut === 'DISPONIBLE' ? 'bg-success' : 'bg-danger'}">${p.statut}</span></p>
+                                        <a href="#" class="btn btn-primary w-100">🛒 Ajouter au panier</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <hr/>
                     `;
                 });
             });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
