@@ -28,6 +28,9 @@ public class ProduitService {
         produit.setPrix(dto.getPrix());
         produit.setStock(dto.getStock());
         produit.setStatus(true); 
+        
+        // Gestion de l'image
+        produit.setImageUrl(dto.getImageUrl());
 
         Categorie cat = categorieRepository.findById(dto.getCategorieId())
                 .orElseThrow(() -> new RuntimeException("Catégorie introuvable avec l'ID : " + dto.getCategorieId()));

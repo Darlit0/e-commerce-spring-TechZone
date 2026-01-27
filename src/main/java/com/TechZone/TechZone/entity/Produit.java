@@ -32,13 +32,16 @@ public class Produit {
     @Column(name = "status", nullable = false)
     private boolean status;
 
+    @Column(name = "image_url", nullable = true, length = 500)
+    private String imageUrl;
+
     @Column(name = "promotion", nullable = true)
     private boolean promotion;
 
     public Produit() {
     }
 
-    public Produit(String nom, String descriptionCourte, String descriptionLongue, Double prix, Integer stock, Categorie categorie, boolean status, boolean promotion) {
+    public Produit(String nom, String descriptionCourte, String descriptionLongue, Double prix, Integer stock, Categorie categorie, boolean status, String imageUrl, boolean promotion) {
         this.nom = nom;
         this.descriptionCourte = descriptionCourte;
         this.descriptionLongue = descriptionLongue;
@@ -46,6 +49,7 @@ public class Produit {
         this.stock = stock;
         this.categorie = categorie;
         this.status = status;
+        this.imageUrl = imageUrl;
         this.promotion = promotion;
     }
 
@@ -97,6 +101,12 @@ public class Produit {
     }
     public void setStatus(boolean status) {
         this.status = status;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
     public boolean isPromotion() {
         return promotion;

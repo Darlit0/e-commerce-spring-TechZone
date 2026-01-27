@@ -24,10 +24,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             // Utilise ma page login personnalisée
-            .formLogin(form -> form
-                .loginPage("/login")
-                .permitAll()
-            ) 
+            .formLogin(login -> login
+            .loginPage("/login") // Ta page de login perso
+            .loginProcessingUrl("/login") // L'URL où le formulaire envoie les données (POST)
+            .defaultSuccessUrl("/index", true) // <--- AJOUTE ÇA ! (true force la redirection)
+            .permitAll()
+)
             .logout(logout -> logout.permitAll());
 
         return http.build();
@@ -37,4 +39,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
 }
