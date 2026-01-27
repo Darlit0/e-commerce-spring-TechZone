@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Navbar</title>
+</head>
+<body>
+    <!-- Fragment de navbar réutilisable -->
+    <nav th:fragment="navbar">
+        <ul>
+            <li><a href="/">🏠 Accueil</a></li>
+            <li><a href="/produits">📱 Produits</a></li>
+            <li><a href="/boutique">🛒 Boutique</a></li>
+            
+            <!-- Bouton Admin visible UNIQUEMENT si l'utilisateur a le rôle ADMIN -->
+            <li sec:authorize="hasRole('ADMIN')">
+                <a href="/admin/dashboard">⚙️ Admin Dashboard</a>
+            </li>
+            
+            <!-- Liens de connexion/déconnexion -->
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/login">🔐 Connexion</a>
+            </li>
+            
+            <li sec:authorize="isAuthenticated()">
+                <span sec:authentication="name">Utilisateur</span>
+                <a href="/logout">🚪 Déconnexion</a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>
