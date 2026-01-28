@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Panier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div th:replace="~{navbar :: navbar}"></div>
+
+    <div class="container py-5">
+        <h1 class="mb-4">Votre Panier 🛒</h1>
+
+        <div th:if="${panier == null or panier.ligneCommandes.empty}" class="alert alert-warning text-center">
+            Votre panier est vide. <a th:href="@{/index}">Aller faire du shopping !</a>
+        </div>
+
+        <div th:if="${panier != null and !panier.ligneCommandes.empty}" class="row">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Prix</th>
+                                    <th>Quantité</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ligne : ${panier.ligneCommandes}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img th:if="${ligne.produit.imagePath}" th:src="${ligne.produit.imagePath}" 
+                                                 width="50" class="rounded me-2">
+                                            <span th:text="${ligne.produit.nom}" class="fw-bold">Nom</span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${ligne.prixUnitaire} + ' €'"></td>
+                                    <td th:text="${ligne.quantite}">1</td>
+                                    
+                                    <td th:text="${ligne.quantite * ligne.prixUnitaire} + ' €'" class="fw-bold text-primary"></td>
+                                    
+                                    <td>
+                                        <form th:action="@{/panier/supprimer}" method="post">
+                                            <input type="hidden" name="ligneId" th:value="${ligne.id}">
+                                            <button class="btn btn-sm btn-outline-danger">❌</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">Résumé</h4>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total à payer :</span>
+                            <span class="h4 text-primary mb-0" th:text="${panier.total} + ' €'">0 €</span>
+                        </div>
+                        <form th:action="@{/panier/valider}" method="post">
+                            <button class="btn btn-dark w-100 py-2">Valider la commande ✅</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -4,66 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Navbar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Fragment de navbar réutilisable -->
     <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/index">
+            <a class="navbar-brand fw-bold" th:href="@{/index}">
                 <i class="bi bi-cart3"></i> TechZone
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
+                
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    
-                    <!-- Bouton Admin visible UNIQUEMENT si l'utilisateur a le rôle ADMIN -->
                     <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link" href="/admin/dashboard">
-                            <i class="bi bi-gear-fill"></i> Admin Dashboard
+                        <a class="nav-link text-warning" th:href="@{/admin/dashboard}">
+                            <i class="bi bi-speedometer2"></i> Admin Dashboard
                         </a>
                     </li>
                 </ul>
                 
-                <!-- Liens de connexion/déconnexion à droite -->
-                <ul class="navbar-nav ms-auto">
-                    <!-- Si NON connecté : afficher bouton Connexion -->
-                    <li class="nav-item" sec:authorize="!isAuthenticated()">
-                        <a class="nav-link" href="/login">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-box-arrow-in-right"></i> Connexion
-                            </button>
-                        </a>
-                    </li>
+                <div class="d-flex align-items-center">
                     
-                    <!-- Si connecté : afficher nom d'utilisateur et dropdown -->
-                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> <span sec:authentication="name">Utilisateur</span>
+                    <div sec:authorize="isAnonymous()">
+                        <a th:href="@{/login}" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-box-arrow-in-right"></i> Connexion
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><h6 class="dropdown-header" sec:authentication="name">Email</h6></li>
-                            <li><hr class="dropdown-divider"></li>
+                    </div>
+
+                    <div class="dropdown" sec:authorize="isAuthenticated()">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2" 
+                                type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>
+                            <span sec:authentication="name" class="fw-bold">Utilisateur</span>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">                            
                             <li>
-                                <a class="dropdown-item" href="/profil">
-                                    <i class="bi bi-person-fill"></i> Mon Profil
+                                <a class="dropdown-item" th:href="@{/profil}">
+                                    <i class="bi bi-person-gear"></i> Mon Profil
                                 </a>
                             </li>
+                            
                             <li><hr class="dropdown-divider"></li>
+                            
                             <li>
-                                <form th:action="@{/logout}" method="post" class="px-2 py-1">
-                                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                                <form th:action="@{/logout}" method="post" class="m-0">
+                                    <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
                                         <i class="bi bi-box-arrow-right"></i> Déconnexion
                                     </button>
                                 </form>
                             </li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                </div>
+
             </div>
         </div>
     </nav>
