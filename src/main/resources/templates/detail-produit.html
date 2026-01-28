@@ -66,7 +66,7 @@
                             
                             <div th:if="${produit.status}">
                                 
-                                <form th:action="@{/panier/ajouter}" method="post">
+                                <form id="ajouterPanierForm" th:action="@{/panier/ajouter}" method="post">
                                     
                                     <input type="hidden" name="produitId" th:value="${produit.id}">
 
@@ -107,7 +107,58 @@
         </div>
     </div>
 
+    <!-- Modal de confirmation -->
+    <div class="modal fade" id="modalPanierAjoute" tabindex="-1" aria-labelledby="modalPanierAjouteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalPanierAjouteLabel">✅ Produit ajouté</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-0">Le produit a été ajouté à votre panier avec succès !</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <a th:href="@{/panier}" class="btn btn-primary">Aller au panier</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ajouterPanierForm');
+            
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(form);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Afficher la modal
+                            const modal = new bootstrap.Modal(document.getElementById('modalPanierAjoute'));
+                            modal.show();
+                        } else {
+                            alert('Erreur lors de l\'ajout au panier');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Erreur lors de l\'ajout au panier');
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
