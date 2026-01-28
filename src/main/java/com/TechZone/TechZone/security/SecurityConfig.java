@@ -31,7 +31,9 @@ public class SecurityConfig {
             .defaultSuccessUrl("/index", true) // <--- AJOUTE ÇA ! (true force la redirection)
             .permitAll()
 )
-            .logout(logout -> logout.permitAll());
+            .logout(logout -> logout
+                .logoutSuccessUrl("/index")
+                .permitAll());
 
         return http.build();
     }
