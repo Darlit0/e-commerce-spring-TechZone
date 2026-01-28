@@ -2,9 +2,6 @@ package com.TechZone.TechZone.config;
 
 import com.TechZone.TechZone.entity.*;
 import com.TechZone.TechZone.repository.*;
-
-import ch.qos.logback.classic.pattern.Util;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,12 +55,45 @@ public class DataInitializer implements CommandLineRunner {
         for (int i = 1; i <= 50; i++) {
             Produit p = new Produit();
             p.setNom("Produit TechZone #" + i);
+
+            // Astuce : On alterne les images en fonction de la catégorie pour faire réaliste
+            // On utilise https://picsum.photos qui fournit des images gratuites
+            if (i % 3 == 0) {
+                // Image type "Tech" (Ordi, etc.)
+                p.setImagePath("https://picsum.photos/id/" + (i + 10) + "/800/600"); 
+                p.setCategorie(info);
+            } else if (i % 3 == 1) {
+                // Image type "Gaming" (enfin, aléatoire ici)
+                p.setImagePath("https://picsum.photos/id/" + (i + 50) + "/800/600");
+                p.setCategorie(gaming);
+            } else {
+                // Image type "Maison"
+                p.setImagePath("https://picsum.photos/id/" + (i + 80) + "/800/600");    
+                p.setCategorie(maison);
+            }
             
             // Prix aléatoire entre 10 et 1000
             double prix = 10 + (1000 - 10) * random.nextDouble();
             p.setPrix(Math.round(prix * 100.0) / 100.0); // Arrondi 2 décimales
-            
-            p.setStock(random.nextInt(100)); // Stock entre 0 et 100
+
+            // DANS LA BOUCLE for (int i = 1; i <= 50; i++) { ...
+
+            // ... (nom, prix, etc.) ...
+
+            // TRUCAGE DU STOCK :
+            // Si 'i' est un multiple de 5 (5, 10, 15...), on force le stock à 0.
+            if (i % 5 == 0) {
+                p.setStock(0); 
+            } else {
+                // Sinon, on met un stock entre 1 et 100
+                p.setStock(1 + random.nextInt(100)); 
+            }
+
+            // IMPORTANT : On laisse le status à TRUE.
+            // C'est ton Service qui dira "Si stock = 0 alors c'est indisponible".
+            p.setStatus(true); 
+
+            // ... }
             p.setPromotion(i % 5 == 0); // 1 produit sur 5 en promo
             
             // Description variée
@@ -128,16 +158,6 @@ public class DataInitializer implements CommandLineRunner {
         admin.setRole(Role.ADMIN);
         utilisateurRepository.save(admin);
 
-<<<<<<< HEAD
         System.out.println("🚀 DONNÉES CHARGÉES AVEC SUCCÈS !");
-=======
-        // --- ÉTAPE 9 : CRÉER UN UTILISATEUR NORMAL ---
-        Utilisateur user2 = new Utilisateur();
-        user2   .setNomUtilisateur("User");
-        user2.setEmail("user@test.com");
-        user2.setMotDePasse(passwordEncoder.encode("user123"));
-        user2.setRole(Role.USER);
-        utilisateurRepository.save(user2);
->>>>>>> 7d45d0ea6e45d89cf5a6479f921e1374351400c4
     }
 }

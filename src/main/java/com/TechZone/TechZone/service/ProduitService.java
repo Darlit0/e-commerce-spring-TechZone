@@ -25,9 +25,9 @@ public class ProduitService {
     }
 
     // --- PAGINATION (Celle qu'on utilise dans le Controller) ---
-    public Page<ProduitResponse> listerProduitsPagine(int page, int size) {
+    public Page<ProduitResponse> listerProduitsPagine(int page, int size, Long categorieId, Boolean enStock, Boolean promo) {
         Pageable pageable = PageRequest.of(page, size);
-        return produitRepository.findAll(pageable)
+        return produitRepository.trouverAvecFiltres(categorieId, enStock, promo, pageable)
                 .map(this::mapToResponse);
     }
 
@@ -36,16 +36,20 @@ public class ProduitService {
         // Sécurité si la catégorie est null
         String nomCat = (p.getCategorie() != null) ? p.getCategorie().getNom() : "Non classé";
 
+        boolean estDisponible = p.isStatus() && p.getStock() > 0;
+
         // APPEL DU CONSTRUCTEUR DANS LE BON ORDRE
         return new ProduitResponse(
             p.getId(),
             p.getNom(),
             p.getPrix(),
             p.getStock(),
-            p.isStatus(),
+            estDisponible,
             nomCat,
             p.getDescriptionCourte(),
+            p.getDescriptionLongue(),
             p.getImagePath()
+            
         );
     }
 
@@ -56,7 +60,7 @@ public class ProduitService {
         produit.setPrix(dto.getPrix());
         produit.setStock(dto.getStock());
         produit.setDescriptionCourte(dto.getDescriptionCourte());
-        produit.setImagePath(dto.getImageUrl()); // Attention au nom dans le DTO Create
+        produit.setImagePath(dto.getImageUrl()); 
         produit.setStatus(true);
 
         Categorie cat = categorieRepository.findById(dto.getCategorieId())

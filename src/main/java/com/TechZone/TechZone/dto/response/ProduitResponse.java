@@ -8,6 +8,7 @@ public class ProduitResponse {
     private Boolean status;
     private String nomCategorie;
     private String descriptionCourte;
+    private String descriptionLongue;
     private String imagePath;
 
     // 1. Constructeur Vide (Obligatoire)
@@ -15,7 +16,7 @@ public class ProduitResponse {
     }
 
     // 2. Constructeur Complet (Ordre important pour le Service)
-    public ProduitResponse(Long id, String nom, Double prix, Integer stock, Boolean status, String nomCategorie, String descriptionCourte, String imagePath) {
+    public ProduitResponse(Long id, String nom, Double prix, Integer stock, Boolean status, String nomCategorie, String descriptionCourte, String descriptionLongue, String imagePath) {
         this.id = id;
         this.nom = nom;
         this.prix = prix;
@@ -23,6 +24,7 @@ public class ProduitResponse {
         this.status = status;
         this.nomCategorie = nomCategorie;
         this.descriptionCourte = descriptionCourte;
+        this.descriptionLongue = descriptionLongue;
         this.imagePath = imagePath;
     }
 
@@ -31,9 +33,10 @@ public class ProduitResponse {
     public String getNom() { return nom; }
     public Double getPrix() { return prix; }
     public Integer getStock() { return stock; }
-    public Boolean isStatus() { return status; } // Thymeleaf comprend "status"
+    public Boolean isStatus() { return status; } 
     public String getNomCategorie() { return nomCategorie; }
     public String getDescriptionCourte() { return descriptionCourte; }
+    public String getDescriptionLongue() { return descriptionLongue; }
     public String getImagePath() { return imagePath; }
 
     // --- SETTERS ---
@@ -44,5 +47,6 @@ public class ProduitResponse {
     public void setStatus(Boolean status) { this.status = status; }
     public void setNomCategorie(String nomCategorie) { this.nomCategorie = nomCategorie; }
     public void setDescriptionCourte(String descriptionCourte) { this.descriptionCourte = descriptionCourte; }
+    public void setDescriptionLongue(String descriptionLongue) { this.descriptionLongue = descriptionLongue; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }
