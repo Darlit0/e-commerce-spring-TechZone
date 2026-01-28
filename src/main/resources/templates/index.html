@@ -3,132 +3,111 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechZone - Accueil</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        /* Petite retouche pour que les images aient toutes la même taille et soient centrées */
-        .card-img-top-wrapper {
-            height: 200px;
-            /* Hauteur fixe pour l'image */
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-        }
-
-        .card-img-top-wrapper img {
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-            /* Coupe l'image pour remplir le cadre sans déformer */
-        }
-
-        .card {
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body>
 
     <div th:replace="~{navbar :: navbar}"></div>
 
-    <div class="container py-5">
-        <h1 class="text-center mb-5 fw-bold text-dark">Nos Produits</h1>
+    <div class="container">
+        <h1 class="main-title">Nos Produits</h1>
 
-        <div class="row">
-            <div class="col-lg-3 mb-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white fw-bold">Filtrer par</div>
-                    <div class="card-body">
-                        <form th:action="@{/index}" method="get">
+        <div class="content-grid">
+            <!-- Sidebar Filtres -->
+            <aside class="sidebar">
+                <div class="sidebar-header">Filtrer par</div>
+                <div class="sidebar-content">
+                    <form th:action="@{/index}" method="get">
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Catégorie</label>
+                            <select name="categorieId" class="filter-select">
+                                <option value="">Toutes les catégories</option>
+                                <option th:each="cat : ${categories}" 
+                                        th:value="${cat.id}" 
+                                        th:text="${cat.nom}"
+                                        th:selected="${cat.id == currentCategorieId}">
+                                </option>
+                            </select>
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label small text-muted">Catégorie</label>
-                                <select name="categorieId" class="form-select">
-                                    <option value="">Toutes les catégories</option>
-                                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.nom}"
-                                        th:selected="${cat.id == currentCategorieId}"> </option>
-                                </select>
+                        <div class="filter-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" 
+                                       name="enStock" 
+                                       value="true" 
+                                       id="checkStock" 
+                                       th:checked="${currentEnStock}">
+                                <label for="checkStock">En stock uniquement</label>
                             </div>
 
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="enStock" value="true"
-                                    id="checkStock" th:checked="${currentEnStock}">
-                                <label class="form-check-label" for="checkStock">
-                                    En stock uniquement 📦
-                                </label>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" name="promo" value="true"
-                                    id="checkPromo" th:checked="${currentPromo}">
-                                <label class="form-check-label" for="checkPromo">
-                                    En promotion 🔥
-                                </label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100">Appliquer les filtres</button>
-
-                            <div class="mt-2 text-center">
-                                <a th:href="@{/index}" class="text-decoration-none small text-muted">Réinitialiser</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-9">
-
-                <div th:if="${produitPage.empty}" class="text-center py-5">
-                    <div class="alert alert-info">
-                        Aucun produit ne correspond à vos critères de recherche 🕵️‍♂️
-                    </div>
-                </div>
-
-                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" th:unless="${produitPage.empty}">
-                    <div class="col" th:each="produit : ${produitPage.content}">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-img-top-wrapper">
-                                <a th:href="@{/produit/{id}(id=${produit.id})}">
-                                    <img th:if="${produit.imagePath}" th:src="${produit.imagePath}"
-                                        th:alt="${produit.nom}">
-                                </a>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${produit.nom}">Nom</h5>
-                                <span class="badge bg-info" th:text="${produit.nomCategorie}">Cat</span>
-                                <p class="fw-bold mt-2" th:text="${produit.prix} + ' €'"></p>
+                            <div class="checkbox-group">
+                                <input type="checkbox" 
+                                       name="promo" 
+                                       value="true" 
+                                       id="checkPromo" 
+                                       th:checked="${currentPromo}">
+                                <label for="checkPromo">En promotion</label>
                             </div>
                         </div>
-                    </div>
+
+                        <button type="submit" class="btn-primary">Appliquer</button>
+                        
+                        <a th:href="@{/index}" class="reset-link">Réinitialiser</a>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Section Produits -->
+            <section class="products-section">
+
+                <!-- Message vide -->
+                <div th:if="${produitPage.empty}" class="empty-state">
+                    Aucun produit ne correspond à vos critères de recherche
                 </div>
 
-                <nav class="mt-5" th:if="${produitPage.totalPages > 1}">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}"
-                            th:classappend="${i == produitPage.number} ? 'active'">
+                <!-- Grille produits -->
+                <div class="products-grid" th:unless="${produitPage.empty}">
+                    <article class="product-card" th:each="produit : ${produitPage.content}">
+                        <div class="product-image-wrapper">
+                            <a th:href="@{/produit/{id}(id=${produit.id})}">
+                                <img th:if="${produit.imagePath}" 
+                                     th:src="${produit.imagePath}"
+                                     th:alt="${produit.nom}">
+                            </a>
+                        </div>
+                        <div class="product-content">
+                            <a th:href="@{/produit/{id}(id=${produit.id})}">
+                                <h3 class="product-title" th:text="${produit.nom}">Nom du produit</h3>
+                            </a>
+                            <span class="product-category" th:text="${produit.nomCategorie}">Catégorie</span>
+                            <p class="product-price" th:text="${produit.prix} + ' €'">Prix</p>
+                        </div>
+                    </article>
+                </div>
 
+                <!-- Pagination -->
+                <nav th:if="${produitPage.totalPages > 1}">
+                    <ul class="pagination">
+                        <li class="page-item" 
+                            th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}"
+                            th:classappend="${i == produitPage.number} ? 'active'">
                             <a class="page-link"
-                                th:href="@{/index(page=${i}, size=${produitPage.size}, categorieId=${currentCategorieId}, enStock=${currentEnStock}, promo=${currentPromo})}"
-                                th:text="${i + 1}">
+                               th:href="@{/index(page=${i}, size=${produitPage.size}, categorieId=${currentCategorieId}, enStock=${currentEnStock}, promo=${currentPromo})}"
+                               th:text="${i + 1}">
                             </a>
                         </li>
                     </ul>
                 </nav>
 
-            </div>
+            </section>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 
 </html>
