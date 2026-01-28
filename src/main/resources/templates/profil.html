@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - TechZone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Mon Compte</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="#informations" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                            <i class="bi bi-person-circle"></i> Mes Informations
+                        </a>
+                        <a href="#commandes" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="bi bi-bag-check"></i> Mes Commandes
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <!-- ONGLET 1 : Mes Informations -->
+                    <div class="tab-pane fade show active" id="informations">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Mes Informations Personnelles</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="profilForm">
+                                    <div class="mb-3">
+                                        <label for="nomUtilisateur" class="form-label">Nom d'utilisateur</label>
+                                        <input type="text" class="form-control" id="nomUtilisateur" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="motDePasse" class="form-label">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                                        <input type="password" class="form-control" id="motDePasse" placeholder="********">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle"></i> Enregistrer les modifications
+                                    </button>
+                                </form>
+                                <div id="successMessage" class="alert alert-success mt-3 d-none">
+                                    <i class="bi bi-check-circle-fill"></i> Profil mis à jour avec succès !
+                                </div>
+                                <div id="errorMessage" class="alert alert-danger mt-3 d-none">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> Erreur lors de la mise à jour du profil.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ONGLET 2 : Mes Commandes -->
+                    <div class="tab-pane fade" id="commandes">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Historique de mes Commandes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="listeCommandes">
+                                    <p class="text-center">
+                                        <span class="spinner-border spinner-border-sm"></span> Chargement...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Charger les informations du profil
+        async function chargerProfil() {
+            try {
+                const response = await fetch('/api/profil/info');
+                const data = await response.json();
+                document.getElementById('nomUtilisateur').value = data.nomUtilisateur;
+                document.getElementById('email').value = data.email;
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+
+        // Sauvegarder les modifications du profil
+        document.getElementById('profilForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const data = {
+                nomUtilisateur: document.getElementById('nomUtilisateur').value,
+                email: document.getElementById('email').value
+            };
+
+            const motDePasse = document.getElementById('motDePasse').value;
+            if (motDePasse) {
+                data.motDePasse = motDePasse;
+            }
+
+            try {
+                const response = await fetch('/api/profil/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    document.getElementById('successMessage').classList.remove('d-none');
+                    document.getElementById('errorMessage').classList.add('d-none');
+                    document.getElementById('motDePasse').value = '';
+                    setTimeout(() => {
+                        document.getElementById('successMessage').classList.add('d-none');
+                    }, 3000);
+                } else {
+                    document.getElementById('errorMessage').classList.remove('d-none');
+                    document.getElementById('successMessage').classList.add('d-none');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('errorMessage').classList.remove('d-none');
+                document.getElementById('successMessage').classList.add('d-none');
+            }
+        });
+
+        // Charger l'historique des commandes
+        async function chargerCommandes() {
+            try {
+                const response = await fetch('/api/profil/commandes');
+                const commandes = await response.json();
+                
+                const listeDiv = document.getElementById('listeCommandes');
+                
+                if (commandes.length === 0) {
+                    listeDiv.innerHTML = '<p class="text-center text-muted">Aucune commande pour le moment.</p>';
+                    return;
+                }
+
+                let html = '';
+                commandes.forEach(commande => {
+                    let statusClass = 'secondary';
+                    if (commande.status === 'LIVREE') statusClass = 'success';
+                    else if (commande.status === 'EN_COURS') statusClass = 'primary';
+                    else if (commande.status === 'ANNULEE') statusClass = 'danger';
+
+                    html += `
+                        <div class="card mb-3">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><strong>Commande #${commande.id}</strong></span>
+                                <span class="badge bg-${statusClass}">${commande.status}</span>
+                            </div>
+                            <div class="card-body">
+                                <p><small class="text-muted"><i class="bi bi-calendar3"></i> ${new Date(commande.dateCommande).toLocaleDateString('fr-FR')}</small></p>
+                                <hr>
+                                <h6>Produits :</h6>
+                                <ul class="list-unstyled">`;
+                    
+                    commande.lignes.forEach(ligne => {
+                        html += `
+                            <li class="mb-2">
+                                <i class="bi bi-box-seam"></i> ${ligne.nomProduit} - 
+                                Quantité: ${ligne.quantite} - 
+                                ${ligne.prixUnitaire.toFixed(2)}€ = ${(ligne.quantite * ligne.prixUnitaire).toFixed(2)}€
+                            </li>`;
+                    });
+
+                    html += `
+                                </ul>
+                                <hr>
+                                <p class="text-end mb-0"><strong>Total : ${commande.totalCommande.toFixed(2)} €</strong></p>
+                            </div>
+                        </div>`;
+                });
+
+                listeDiv.innerHTML = html;
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('listeCommandes').innerHTML = '<p class="text-danger text-center">Erreur lors du chargement des commandes.</p>';
+            }
+        }
+
+        // Charger le profil au chargement de la page
+        chargerProfil();
+
+        // Charger les commandes quand on clique sur l'onglet
+        document.querySelector('a[href="#commandes"]').addEventListener('click', function() {
+            chargerCommandes();
+        });
+    </script>
+</body>
+</html>

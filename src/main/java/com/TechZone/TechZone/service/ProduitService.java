@@ -74,7 +74,7 @@ public class ProduitService {
         return produitRepository.findAll().stream().map(this::mapToResponse).toList();
     }
 
-    public ProduitResponse trouverParId(Long id) {
+    public ProduitResponse trouverParIdResponse(Long id) {
     return produitRepository.findById(id)
             .map(this::mapToResponse)
             .orElseThrow(() -> new RuntimeException("Produit non trouvé avec l'id: " + id));
@@ -98,5 +98,16 @@ public class ProduitService {
 
     public void supprimerProduit(Long id) {
         produitRepository.deleteById(id);
+    }
+
+    // Méthode pour la pagination dans le dashboard
+    public Page<ProduitResponse> listerProduitsPage(Pageable pageable) {
+        return produitRepository.findAll(pageable).map(this::mapToResponse);
+    }
+
+    // Méthode pour récupérer un Produit entier (pas juste le DTO)
+    public Produit trouverParId(Long id) {
+        return produitRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit non trouvé avec l'id: " + id));
     }
 }

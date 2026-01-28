@@ -52,7 +52,7 @@ public class HomeController {
     // Maintenant, cette URL sera bien accessible via http://localhost:8080/produit/1
     @GetMapping("/produit/{id}")
     public String afficherDetail(@PathVariable Long id, Model model) {
-        ProduitResponse produit = produitService.trouverParId(id);
+        ProduitResponse produit = produitService.trouverParIdResponse(id);
         model.addAttribute("produit", produit);
         return "detail-produit";
     }

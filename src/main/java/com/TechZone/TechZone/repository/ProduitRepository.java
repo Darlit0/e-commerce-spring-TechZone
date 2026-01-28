@@ -19,4 +19,7 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
             Pageable pageable
     );
     
+    // Compter les produits d'une catégorie
+    long countByCategorieId(Long categorieId);
+    
 }

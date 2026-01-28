@@ -1,22 +1,27 @@
 package com.TechZone.TechZone.controller.mvc;
 
+import com.TechZone.TechZone.entity.Categorie;
+import com.TechZone.TechZone.entity.Utilisateur;
 import com.TechZone.TechZone.repository.CategorieRepository;
 import com.TechZone.TechZone.repository.UtilisateurRepository;
-import com.TechZone.TechZone.service.ProduitService; // Import du Service
+import com.TechZone.TechZone.service.ProduitService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminDashboardController {
 
     private final UtilisateurRepository utilisateurRepository;
-    private final ProduitService produitService; // On remplace le Repository par le Service
+    private final ProduitService produitService;
     private final CategorieRepository categorieRepository;
 
-    // Injection du Service Produit
     public AdminDashboardController(UtilisateurRepository utilisateurRepository, 
                                     ProduitService produitService, 
                                     CategorieRepository categorieRepository) {
@@ -26,16 +31,27 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/dashboard")
-    public String showDashboard(Model model) {
-        // Utilisateurs (On garde le repository pour l'instant si vous n'avez pas de UserDTO)
-        model.addAttribute("utilisateurs", utilisateurRepository.findAll());
+    public String showDashboard(
+            @RequestParam(defaultValue = "0") int userPage,
+            @RequestParam(defaultValue = "0") int produitPage,
+            @RequestParam(defaultValue = "0") int categoriePage,
+            Model model) {
         
-        // Produits : ON UTILISE LE SERVICE !
-        // Cela va renvoyer une List<ProduitResponse> compatible avec votre HTML
-        model.addAttribute("produits", produitService.listerProduits()); 
+        int pageSize = 10;
         
-        // Catégories
-        model.addAttribute("categories", categorieRepository.findAll());
+        // Utilisateurs avec pagination
+        Pageable userPageable = PageRequest.of(userPage, pageSize);
+        Page<Utilisateur> utilisateurs = utilisateurRepository.findAll(userPageable);
+        model.addAttribute("utilisateurs", utilisateurs);
+        
+        // Produits avec pagination
+        Pageable produitPageable = PageRequest.of(produitPage, pageSize);
+        model.addAttribute("produits", produitService.listerProduitsPage(produitPageable));
+        
+        // Catégories avec pagination
+        Pageable categoriePageable = PageRequest.of(categoriePage, pageSize);
+        Page<Categorie> categories = categorieRepository.findAll(categoriePageable);
+        model.addAttribute("categories", categories);
 
         return "admin/dashboard";
     }

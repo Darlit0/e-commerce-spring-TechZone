@@ -24,7 +24,7 @@ public class ProduitRestController {
 
     @GetMapping("/{id}")
     public ProduitResponse getById(@PathVariable Long id) {
-        return produitService.trouverParId(id);
+        return produitService.trouverParIdResponse(id);
     }
 
     @PostMapping("/create")

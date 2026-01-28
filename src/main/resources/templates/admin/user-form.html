@@ -2,17 +2,22 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nouvel Utilisateur</title>
+    <title th:text="${isEdit} ? 'Modifier un utilisateur' : 'Nouvel Utilisateur'">Utilisateur</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
 
 <div th:replace="~{navbar :: navbar}"></div>
 
 <div class="container mt-4">
-    <h2>Créer un nouvel utilisateur</h2>
+    <h2>
+        <i class="bi bi-person-fill"></i>
+        <span th:text="${isEdit} ? 'Modifier un utilisateur' : 'Créer un nouvel utilisateur'"></span>
+    </h2>
 
-    <form th:action="@{/admin/utilisateurs}" th:object="${userRequest}" method="post" class="mt-3">
+    <form th:action="${isEdit} ? @{/admin/utilisateurs/modifier/{id}(id=${userId})} : @{/admin/utilisateurs}" 
+          th:object="${userRequest}" method="post" class="mt-3">
         <div class="mb-3">
             <label for="username" class="form-label">Nom d'utilisateur</label>
             <input type="text" id="username" th:field="*{username}" class="form-control"
@@ -27,7 +32,7 @@
             <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback"></div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" th:unless="${isEdit}">
             <label for="password" class="form-label">Mot de passe</label>
             <input type="password" id="password" th:field="*{password}" class="form-control"
                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
@@ -38,15 +43,18 @@
             <label for="role" class="form-label">Rôle</label>
             <select id="role" th:field="*{role}" class="form-select"
                     th:classappend="${#fields.hasErrors('role')} ? 'is-invalid' : ''">
-                <!-- Assurez-vous que votre enum Role existe -->
                 <option th:each="roleValue : ${T(com.TechZone.TechZone.entity.Role).values()}"
                         th:value="${roleValue}" th:text="${roleValue}"></option>
             </select>
             <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="invalid-feedback"></div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a th:href="@{/admin/dashboard}" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle"></i> Enregistrer
+        </button>
+        <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> Annuler
+        </a>
     </form>
 </div>
 

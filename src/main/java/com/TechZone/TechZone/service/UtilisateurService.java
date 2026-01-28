@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.TechZone.TechZone.dto.request.UtilisateurCreateDto;
 import com.TechZone.TechZone.dto.request.UtilisateurLoginDto;
+import com.TechZone.TechZone.dto.request.UtilisateurUpdateDto;
 import com.TechZone.TechZone.dto.response.UtilisateurResponse;
 import com.TechZone.TechZone.entity.Utilisateur;
 import com.TechZone.TechZone.repository.UtilisateurRepository;
@@ -90,7 +91,13 @@ public class UtilisateurService {
         
         utilisateur.setNomUtilisateur(dto.getUsername());
         utilisateur.setEmail(dto.getEmail());
-        utilisateur.setMotDePasse(dto.getPassword());
+        
+        // Ne met à jour le mot de passe que s'il n'est pas "dummy"
+        if (dto.getPassword() != null && !dto.getPassword().equals("dummy")) {
+            String motDePasseHache = passwordEncoder.encode(dto.getPassword());
+            utilisateur.setMotDePasse(motDePasseHache);
+        }
+        
         utilisateur.setRole(dto.getRole());
 
         Utilisateur utilisateurMisAJour = utilisateurRepository.save(utilisateur);
@@ -102,6 +109,38 @@ public class UtilisateurService {
         utilisateurRepository.deleteById(id);
     }
 
+    public UtilisateurResponse mettreAJourProfil(Long id, UtilisateurUpdateDto dto) {
+        Utilisateur utilisateur = utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'ID : " + id));
+        
+        if (dto.getNomUtilisateur() != null && !dto.getNomUtilisateur().isEmpty()) {
+            utilisateur.setNomUtilisateur(dto.getNomUtilisateur());
+        }
+        
+        if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
+            utilisateur.setEmail(dto.getEmail());
+        }
+        
+        // Seulement si un nouveau mot de passe est fourni
+        if (dto.getMotDePasse() != null && !dto.getMotDePasse().isEmpty()) {
+            String motDePasseHache = passwordEncoder.encode(dto.getMotDePasse());
+            utilisateur.setMotDePasse(motDePasseHache);
+        }
+
+        Utilisateur utilisateurMisAJour = utilisateurRepository.save(utilisateur);
+        return mapToResponse(utilisateurMisAJour);
+    }
+
+    public Utilisateur trouverParEmail(String email) {
+        return utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'email : " + email));
+    }
+
+    // Méthode pour récupérer l'entité Utilisateur (pour les contrôleurs)
+    public Utilisateur trouverUtilisateurEntity(Long id) {
+        return utilisateurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'ID : " + id));
+    }
 
     private UtilisateurResponse mapToResponse(Utilisateur utilisateur) {
         return new UtilisateurResponse(

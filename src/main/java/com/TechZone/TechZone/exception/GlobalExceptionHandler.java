@@ -41,4 +41,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    // 3. Gérer les contraintes d'intégrité référentielle
+    @ExceptionHandler(IntegrityConstraintException.class)
+    public ResponseEntity<Map<String, Object>> handleIntegrityConstraintException(IntegrityConstraintException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }

@@ -3,6 +3,7 @@ package com.TechZone.TechZone.controller.mvc;
 import com.TechZone.TechZone.service.ProduitService;
 import com.TechZone.TechZone.dto.request.ProduitCreateDto;
 import com.TechZone.TechZone.dto.response.ProduitResponse;
+import com.TechZone.TechZone.entity.Produit;
 import com.TechZone.TechZone.service.CategorieService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,7 @@ public class AdminProduitPageController {
         
         // On envoie la liste des catégories à la vue
         model.addAttribute("listeCategories", CategorieService.listerCategories());
+        model.addAttribute("isEdit", false);
         
         return "admin/produit-form";
     }
@@ -54,9 +56,52 @@ public class AdminProduitPageController {
         if (bindingResult.hasErrors()) {
             // Si erreur, on renvoie la liste des catégories au formulaire
             model.addAttribute("listeCategories", CategorieService.listerCategories());
+            model.addAttribute("isEdit", false);
             return "admin/produit-form";
         }
         produitService.creerProduit(produitRequest);
+        return "redirect:/admin/dashboard";
+    }
+
+    @GetMapping("/modifier/{id}")
+    public String afficherFormulaireModification(@PathVariable Long id, Model model) {
+        Produit produit = produitService.trouverParId(id);
+        
+        ProduitCreateDto dto = new ProduitCreateDto();
+        dto.setNom(produit.getNom());
+        dto.setDescriptionCourte(produit.getDescriptionCourte());
+        dto.setDescriptionLongue(produit.getDescriptionLongue());
+        dto.setPrix(produit.getPrix());
+        dto.setStock(produit.getStock());
+        dto.setImageUrl(produit.getImagePath());
+        dto.setCategorieId(produit.getCategorie().getId());
+        
+        model.addAttribute("produitRequest", dto);
+        model.addAttribute("produitId", id);
+        model.addAttribute("listeCategories", CategorieService.listerCategories());
+        model.addAttribute("isEdit", true);
+        return "admin/produit-form";
+    }
+
+    @PostMapping("/modifier/{id}")
+    public String modifierProduit(@PathVariable Long id, 
+                                 @Valid @ModelAttribute("produitRequest") ProduitCreateDto dto, 
+                                 BindingResult bindingResult,
+                                 Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("produitId", id);
+            model.addAttribute("listeCategories", CategorieService.listerCategories());
+            model.addAttribute("isEdit", true);
+            return "admin/produit-form";
+        }
+        
+        produitService.mettreAJourProduit(id, dto);
+        return "redirect:/admin/dashboard";
+    }
+
+    @PostMapping("/supprimer/{id}")
+    public String supprimerProduit(@PathVariable Long id) {
+        produitService.supprimerProduit(id);
         return "redirect:/admin/dashboard";
     }
 }
