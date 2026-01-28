@@ -2,6 +2,9 @@ package com.TechZone.TechZone.config;
 
 import com.TechZone.TechZone.entity.*;
 import com.TechZone.TechZone.repository.*;
+
+import ch.qos.logback.classic.pattern.Util;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -125,6 +128,16 @@ public class DataInitializer implements CommandLineRunner {
         admin.setRole(Role.ADMIN);
         utilisateurRepository.save(admin);
 
+<<<<<<< HEAD
         System.out.println("🚀 DONNÉES CHARGÉES AVEC SUCCÈS !");
+=======
+        // --- ÉTAPE 9 : CRÉER UN UTILISATEUR NORMAL ---
+        Utilisateur user2 = new Utilisateur();
+        user2   .setNomUtilisateur("User");
+        user2.setEmail("user@test.com");
+        user2.setMotDePasse(passwordEncoder.encode("user123"));
+        user2.setRole(Role.USER);
+        utilisateurRepository.save(user2);
+>>>>>>> 7d45d0ea6e45d89cf5a6479f921e1374351400c4
     }
 }
