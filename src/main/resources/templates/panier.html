@@ -43,15 +43,15 @@
                                 <tr th:each="ligne : ${panier.ligneCommandes}">
                                     <td>
                                         <div class="table-item-with-image">
-                                            <img th:if="${ligne.produit.imagePath}" th:src="${ligne.produit.imagePath}" 
-                                                 class="table-item-image" th:alt="${ligne.produit.nom}">
-                                            <span class="table-item-name" th:text="${ligne.produit.nom}">Nom</span>
+                                            <img th:if="${ligne.product.imagePath}" th:src="${ligne.product.imagePath}" 
+                                                 class="table-item-image" th:alt="${ligne.product.name}">
+                                            <span class="table-item-name" th:text="${ligne.product.name}">Nom</span>
                                         </div>
                                     </td>
-                                    <td class="price" th:text="${ligne.prixUnitaire} + ' €'"></td>
-                                    <td th:text="${ligne.quantite}">1</td>
+                                    <td class="price" th:text="${ligne.unitPrice} + ' €'"></td>
+                                    <td th:text="${ligne.quantity}">1</td>
                                     
-                                    <td class="price" th:text="${ligne.quantite * ligne.prixUnitaire} + ' €'"></td>
+                                    <td class="price" th:text="${ligne.quantity * ligne.unitPrice} + ' €'"></td>
                                     
                                     <td>
                                         <form th:action="@{/panier/supprimer}" method="post">

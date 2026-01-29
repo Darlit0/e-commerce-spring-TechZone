@@ -76,7 +76,7 @@
                 <tr th:each="commande : ${listeCommandes}">
                     <td th:text="${commande.id}">1</td>
                     <td th:text="${#temporals.format(commande.dateCommande, 'dd/MM/yyyy')}">01/01/2026</td>
-                    <td th:text="${commande.utilisateur.nomUtilisateur}">Client</td>
+                    <td th:text="${commande.user.username}">Client</td>
                     <td>
                         <span class="status" th:classappend="'status-' + ${commande.status}" th:text="${commande.status}">PENDING</span>
                     </td>

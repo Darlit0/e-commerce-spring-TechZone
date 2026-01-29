@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${produit.nom} + ' - TechZone'">Détail Produit</title>
+    <title th:text="${produit.name} + ' - TechZone'">Détail Produit</title>
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
     <link th:href="@{/css/product-detail.css}" rel="stylesheet">
 </head>
@@ -18,21 +18,21 @@
 
         <nav aria-label="breadcrumb" class="breadcrumb">
             <li class="breadcrumb-item"><a th:href="@{/index}">Accueil</a></li>
-            <li class="breadcrumb-item active" aria-current="page" th:text="${produit.nom}">Produit</li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${produit.name}">Produit</li>
         </nav>
 
         <div class="card">
             <div class="product-grid">
 
                 <div class="product-image-section">
-                    <img th:if="${produit.imagePath}" th:src="${produit.imagePath}" th:alt="${produit.nom}">
+                    <img th:if="${produit.imagePath}" th:src="${produit.imagePath}" th:alt="${produit.name}">
                     <img th:unless="${produit.imagePath}" src="https://via.placeholder.com/800x600?text=Pas+d'image" alt="Image défaut">
                 </div>
 
                 <div class="product-info-section">
 
                     <div>
-                        <span class="badge badge-info" th:text="${produit.nomCategorie}">Cat</span>
+                        <span class="badge badge-info" th:text="${produit.categoryName}">Cat</span>
                         <span th:if="${produit.status}" class="badge badge-success">En Stock</span>
                         <span th:unless="${produit.status}" class="badge badge-danger">Rupture de stock</span>
                     </div>

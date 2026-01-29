@@ -1,10 +1,10 @@
 package com.TechZone.TechZone.controller.mvc;
 
-import com.TechZone.TechZone.service.ProduitService;
-import com.TechZone.TechZone.dto.request.ProduitCreateDto;
-import com.TechZone.TechZone.dto.response.ProduitResponse;
-import com.TechZone.TechZone.entity.Produit;
-import com.TechZone.TechZone.service.CategorieService;
+import com.TechZone.TechZone.service.ProductService;
+import com.TechZone.TechZone.dto.request.ProductCreateDto;
+import com.TechZone.TechZone.dto.response.ProductResponse;
+import com.TechZone.TechZone.entity.Product;
+import com.TechZone.TechZone.service.CategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,94 +14,94 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/produits") // L'URL sera http://localhost:8080/produits
+@RequestMapping("/produits") 
 public class AdminProduitPageController {
 
-    private final ProduitService produitService;
-    private final CategorieService CategorieService;
+    private final ProductService produitService;
+    private final CategoryService CategorieService;
 
-    // On injecte le Service (qui marche déjà pour ton API)
-    public AdminProduitPageController(ProduitService produitService, CategorieService categorieService) {
+    
+    public AdminProduitPageController(ProductService produitService, CategoryService categorieService) {
         this.produitService = produitService;
         this.CategorieService = categorieService;
     }
 
     @GetMapping
     public String afficherBoutique(Model model) {
-        // 1. On récupère la liste (C'est la même méthode que pour ton API Rest !)
-        List<ProduitResponse> mesProduits = produitService.listerProduits();
+        
+        List<ProductResponse> mesProduits = produitService.listProducts();
 
-        // 2. On "scotche" la liste sur le modèle avec l'étiquette "listeProduits"
+        
         model.addAttribute("listeProduits", mesProduits);
 
-        // 3. On appelle la vue "produits.html"
+        
         return "produits";
     }
 
-    // 1. AFFICHER LE FORMULAIRE
+    
     @GetMapping("/nouveau")
     public String afficherFormulaire(Model model) {
-        model.addAttribute("produitRequest", new ProduitCreateDto());
+        model.addAttribute("produitRequest", new ProductCreateDto());
         
-        // On envoie la liste des catégories à la vue
-        model.addAttribute("listeCategories", CategorieService.listerCategories());
+        
+        model.addAttribute("listeCategories", CategorieService.listCategories());
         model.addAttribute("isEdit", false);
         
         return "admin/produit-form";
     }
 
-    // 2. ENREGISTRER
+    
     @PostMapping("/enregistrer")
-    public String enregistrerProduit(@Valid @ModelAttribute("produitRequest") ProduitCreateDto produitRequest, BindingResult bindingResult, Model model) {
+    public String enregistrerProduit(@Valid @ModelAttribute("produitRequest") ProductCreateDto produitRequest, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            // Si erreur, on renvoie la liste des catégories au formulaire
-            model.addAttribute("listeCategories", CategorieService.listerCategories());
+            
+            model.addAttribute("listeCategories", CategorieService.listCategories());
             model.addAttribute("isEdit", false);
             return "admin/produit-form";
         }
-        produitService.creerProduit(produitRequest);
+        produitService.createProduct(produitRequest);
         return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/modifier/{id}")
     public String afficherFormulaireModification(@PathVariable Long id, Model model) {
-        Produit produit = produitService.trouverParId(id);
+        Product produit = produitService.findById(id);
         
-        ProduitCreateDto dto = new ProduitCreateDto();
-        dto.setNom(produit.getNom());
-        dto.setDescriptionCourte(produit.getDescriptionCourte());
-        dto.setDescriptionLongue(produit.getDescriptionLongue());
-        dto.setPrix(produit.getPrix());
+        ProductCreateDto dto = new ProductCreateDto();
+        dto.setNom(produit.getName());
+        dto.setDescriptionCourte(produit.getShortDescription());
+        dto.setDescriptionLongue(produit.getLongDescription());
+        dto.setPrix(produit.getPrice());
         dto.setStock(produit.getStock());
         dto.setImageUrl(produit.getImagePath());
-        dto.setCategorieId(produit.getCategorie().getId());
+        dto.setCategorieId(produit.getCategory().getId());
         
         model.addAttribute("produitRequest", dto);
         model.addAttribute("produitId", id);
-        model.addAttribute("listeCategories", CategorieService.listerCategories());
+        model.addAttribute("listeCategories", CategorieService.listCategories());
         model.addAttribute("isEdit", true);
         return "admin/produit-form";
     }
 
     @PostMapping("/modifier/{id}")
     public String modifierProduit(@PathVariable Long id, 
-                                 @Valid @ModelAttribute("produitRequest") ProduitCreateDto dto, 
+                                 @Valid @ModelAttribute("produitRequest") ProductCreateDto dto, 
                                  BindingResult bindingResult,
                                  Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("produitId", id);
-            model.addAttribute("listeCategories", CategorieService.listerCategories());
+            model.addAttribute("listeCategories", CategorieService.listCategories());
             model.addAttribute("isEdit", true);
             return "admin/produit-form";
         }
         
-        produitService.mettreAJourProduit(id, dto);
+        produitService.updateProduct(id, dto);
         return "redirect:/admin/dashboard";
     }
 
     @PostMapping("/supprimer/{id}")
     public String supprimerProduit(@PathVariable Long id) {
-        produitService.supprimerProduit(id);
+        produitService.deleteProduct(id);
         return "redirect:/admin/dashboard";
     }
 }

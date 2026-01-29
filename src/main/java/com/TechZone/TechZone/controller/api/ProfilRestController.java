@@ -1,10 +1,10 @@
 package com.TechZone.TechZone.controller.api;
 
-import com.TechZone.TechZone.dto.request.UtilisateurUpdateDto;
-import com.TechZone.TechZone.dto.response.CommandeDetailResponse;
-import com.TechZone.TechZone.entity.Utilisateur;
-import com.TechZone.TechZone.service.CommandeService;
-import com.TechZone.TechZone.service.UtilisateurService;
+import com.TechZone.TechZone.dto.request.UserUpdateDto;
+import com.TechZone.TechZone.dto.response.OrderDetailResponse;
+import com.TechZone.TechZone.entity.User;
+import com.TechZone.TechZone.service.OrderService;
+import com.TechZone.TechZone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,44 +19,44 @@ import java.util.Map;
 public class ProfilRestController {
 
     @Autowired
-    private UtilisateurService utilisateurService;
+    private UserService utilisateurService;
 
     @Autowired
-    private CommandeService commandeService;
+    private OrderService commandeService;
 
     @GetMapping("/info")
     public ResponseEntity<Map<String, Object>> getProfilInfo(Authentication authentication) {
         String email = authentication.getName();
-        Utilisateur utilisateur = utilisateurService.trouverParEmail(email);
+        User user = utilisateurService.findByEmail(email);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("id", utilisateur.getId());
-        response.put("nomUtilisateur", utilisateur.getNomUtilisateur());
-        response.put("email", utilisateur.getEmail());
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update")
     public ResponseEntity<Map<String, String>> updateProfil(
-            @RequestBody UtilisateurUpdateDto dto,
+            @RequestBody UserUpdateDto dto,
             Authentication authentication) {
         String email = authentication.getName();
-        Utilisateur utilisateur = utilisateurService.trouverParEmail(email);
+        User user = utilisateurService.findByEmail(email);
         
-        utilisateurService.mettreAJourProfil(utilisateur.getId(), dto);
+        utilisateurService.updateProfile(user.getId(), dto);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Profil mis à jour avec succès");
+        response.put("message", "Profile updated successfully");
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/commandes")
-    public ResponseEntity<List<CommandeDetailResponse>> getMesCommandes(Authentication authentication) {
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDetailResponse>> getMyOrders(Authentication authentication) {
         String email = authentication.getName();
-        Utilisateur utilisateur = utilisateurService.trouverParEmail(email);
+        User user = utilisateurService.findByEmail(email);
 
-        List<CommandeDetailResponse> commandes = commandeService.getCommandesUtilisateur(utilisateur.getId());
-        return ResponseEntity.ok(commandes);
+        List<OrderDetailResponse> orders = commandeService.getUserOrders(user.getId());
+        return ResponseEntity.ok(orders);
     }
 }

@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("error", "Validation Failed");
         
-        // On récupère la liste précise des champs en erreur
+        
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> 
             errors.put(error.getField(), error.getDefaultMessage())
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // 2. Gérer les erreurs MÉTIER (ex: Catégorie introuvable)
+    
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    // 3. Gérer les contraintes d'intégrité référentielle
+    
     @ExceptionHandler(IntegrityConstraintException.class)
     public ResponseEntity<Map<String, Object>> handleIntegrityConstraintException(IntegrityConstraintException ex) {
         Map<String, Object> response = new HashMap<>();

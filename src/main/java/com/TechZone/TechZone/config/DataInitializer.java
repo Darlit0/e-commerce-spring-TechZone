@@ -12,152 +12,119 @@ import java.util.Random;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final UtilisateurRepository utilisateurRepository;
-    private final ProduitRepository produitRepository;
-    private final CategorieRepository categorieRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(UtilisateurRepository utilisateurRepository,
-                           ProduitRepository produitRepository,
-                           CategorieRepository categorieRepository,
+    public DataInitializer(UserRepository userRepository,
+                           ProductRepository productRepository,
+                           CategoryRepository categoryRepository,
                            PasswordEncoder passwordEncoder) {
-        this.utilisateurRepository = utilisateurRepository;
-        this.produitRepository = produitRepository;
-        this.categorieRepository = categorieRepository;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        System.out.println("⏳ DÉBUT DU CHARGEMENT MASSIF DES DONNÉES...");
+        System.out.println("⏳ LOADING DATA...");
 
-        // 1. NETTOYAGE (Optionnel : pour éviter les doublons si tu relances sans drop-create)
-        // utilisateurRepository.deleteAll();
-        // produitRepository.deleteAll();
-        // categorieRepository.deleteAll();
+        Category info = new Category();
+        info.setName("Technology");
+        Category gaming = new Category();
+        gaming.setName("Gaming");
+        Category smart = new Category();
+        smart.setName("Smart Home");
 
-        // 2. CRÉATION DES CATÉGORIES
-        Categorie info = new Categorie();
-        info.setNom("Informatique");
-        Categorie gaming = new Categorie();
-        gaming.setNom("Gaming");
-        Categorie maison = new Categorie();
-        maison.setNom("Maison Connectée");
+        info = categoryRepository.save(info);
+        gaming = categoryRepository.save(gaming);
+        smart = categoryRepository.save(smart);
 
-        info = categorieRepository.save(info);
-        gaming = categorieRepository.save(gaming);
-        maison = categorieRepository.save(maison);
-
-        // 3. GÉNÉRATION DE 50 PRODUITS POUR LA PAGINATION
         Random random = new Random();
         
         for (int i = 1; i <= 50; i++) {
-            Produit p = new Produit();
-            p.setNom("Produit TechZone #" + i);
+            Product p = new Product();
+            p.setName("TechZone Product #" + i);
 
-            // Astuce : On alterne les images en fonction de la catégorie pour faire réaliste
-            // On utilise https://picsum.photos qui fournit des images gratuites
             if (i % 3 == 0) {
-                // Image type "Tech" (Ordi, etc.)
-                p.setImagePath("https://picsum.photos/id/" + (i + 10) + "/800/600"); 
-                p.setCategorie(info);
+                p.setImagePath("https://via.placeholder.com/300");
+                p.setCategory(info);
             } else if (i % 3 == 1) {
-                // Image type "Gaming" (enfin, aléatoire ici)
-                p.setImagePath("https://picsum.photos/id/" + (i + 50) + "/800/600");
-                p.setCategorie(gaming);
+                p.setImagePath("https://via.placeholder.com/300");
+                p.setCategory(gaming);
             } else {
-                // Image type "Maison"
-                p.setImagePath("https://picsum.photos/id/" + (i + 80) + "/800/600");    
-                p.setCategorie(maison);
+                p.setImagePath("https://via.placeholder.com/300");
+                p.setCategory(smart);
             }
             
-            // Prix aléatoire entre 10 et 1000
-            double prix = 10 + (1000 - 10) * random.nextDouble();
-            p.setPrix(Math.round(prix * 100.0) / 100.0); // Arrondi 2 décimales
+            double price = 10 + (1000 - 10) * random.nextDouble();
+            p.setPrice(Math.round(price * 100.0) / 100.0);
 
-            // DANS LA BOUCLE for (int i = 1; i <= 50; i++) { ...
-
-            // ... (nom, prix, etc.) ...
-
-            // TRUCAGE DU STOCK :
-            // Si 'i' est un multiple de 5 (5, 10, 15...), on force le stock à 0.
             if (i % 5 == 0) {
                 p.setStock(0); 
             } else {
-                // Sinon, on met un stock entre 1 et 100
                 p.setStock(1 + random.nextInt(100)); 
             }
 
-            // IMPORTANT : On laisse le status à TRUE.
-            // C'est ton Service qui dira "Si stock = 0 alors c'est indisponible".
             p.setStatus(true); 
 
-            // ... }
-            p.setPromotion(i % 5 == 0); // 1 produit sur 5 en promo
+            p.setPromotion(i % 5 == 0);
             
-            // Description variée
-            p.setDescriptionCourte("Description courte pour le produit numéro " + i);
-            p.setDescriptionLongue("Voici une description beaucoup plus longue pour tester l'affichage des détails du produit " + i + ". Lorem ipsum dolor sit amet.");
+            p.setShortDescription("Short description for product #" + i);
+            p.setLongDescription("This is a much longer description to test the display of product details #" + i + ". Lorem ipsum dolor sit amet.");
 
-            // Distribution des catégories (Modulo 3)
             if (i % 3 == 0) {
-                p.setCategorie(info);
+                p.setCategory(info);
             } else if (i % 3 == 1) {
-                p.setCategorie(gaming);
+                p.setCategory(gaming);
             } else {
-                p.setCategorie(maison);
+                p.setCategory(smart);
             }
 
-            produitRepository.save(p);
+            productRepository.save(p);
         }
-        System.out.println("✅ 50 Produits générés !");
+        System.out.println("✅ 50 Products generated!");
 
-        // 4. CRÉATION DES UTILISATEURS (Tes données d'origine)
-        
-        // --- Alice (Client) ---
-        Utilisateur user = new Utilisateur();
-        user.setNomUtilisateur("Alice Martin");
+        User user = new User();
+        user.setUsername("Alice Martin");
         user.setEmail("alice@test.com");
-        user.setMotDePasse(passwordEncoder.encode("password123"));
-        user.setRole(Role.USER); // Assure-toi que c'est USER ou CLIENT selon ton Enum
+        user.setPassword(passwordEncoder.encode("password123"));
+        user.setRole(Role.USER);
 
-        // Création d'une commande test pour Alice
-        Commande commande1 = new Commande();
-        commande1.setStatus(StatusCommande.PENDING);
-        commande1.setUtilisateur(user);
+        Order order1 = new Order();
+        order1.setStatus(OrderStatus.PENDING);
+        order1.setUser(user);
         
-        // On lie une ligne de commande (avec le dernier produit créé dans la boucle, ou un nouveau)
-        // Pour faire simple, on recrée un produit "Star"
-        Produit starProduct = new Produit();
-        starProduct.setNom("iPhone 15 Pro Max");
-        starProduct.setPrix(1450.00);
+        Product starProduct = new Product();
+        starProduct.setName("iPhone 15 Pro Max");
+        starProduct.setPrice(1450.00);
         starProduct.setStock(10);
-        starProduct.setCategorie(info);
-        produitRepository.save(starProduct);
+        starProduct.setCategory(info);
+        productRepository.save(starProduct);
 
-        LigneCommande ligne1 = new LigneCommande();
-        ligne1.setQuantite(1);
-        ligne1.setProduit(starProduct);
-        ligne1.setPrixUnitaire(starProduct.getPrix()); // Bonne pratique : figer le prix
+        OrderLine line1 = new OrderLine();
+        line1.setQuantity(1);
+        line1.setProduct(starProduct);
+        line1.setUnitPrice(starProduct.getPrice());
         
-        // Liaison bidirectionnelle
-        commande1.setLigneCommandes(new ArrayList<>());
-        commande1.addLigneCommande(ligne1); // Ta méthode helper
+        order1.setOrderLines(new ArrayList<>());
+        order1.addOrderLine(line1);
 
-        user.setCommandes(new ArrayList<>());
-        user.getCommandes().add(commande1);
+        user.setOrders(new ArrayList<>());
+        user.getOrders().add(order1);
 
-        utilisateurRepository.save(user);
+        userRepository.save(user);
 
-        // --- Admin ---
-        Utilisateur admin = new Utilisateur();
-        admin.setNomUtilisateur("Admin");
+        User admin = new User();
+        admin.setUsername("Admin");
         admin.setEmail("admin@test.com");
-        admin.setMotDePasse(passwordEncoder.encode("admin123"));
+        admin.setPassword(passwordEncoder.encode("admin123"));
         admin.setRole(Role.ADMIN);
-        utilisateurRepository.save(admin);
+        userRepository.save(admin);
 
-        System.out.println("🚀 DONNÉES CHARGÉES AVEC SUCCÈS !");
+        System.out.println("🚀 DATA LOADED SUCCESSFULLY!");
     }
 }

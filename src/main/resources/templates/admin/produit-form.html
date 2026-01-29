@@ -61,7 +61,7 @@
                         <option value="">-- Choisir une catégorie --</option>
                         <option th:each="cat : ${listeCategories}"
                                 th:value="${cat.id}"
-                                th:text="${cat.nom}"></option>
+                                th:text="${cat.name}"></option>
                     </select>
                     <div th:if="${#fields.hasErrors('categorieId')}" th:errors="*{categorieId}" class="invalid-feedback"></div>
                 </div>

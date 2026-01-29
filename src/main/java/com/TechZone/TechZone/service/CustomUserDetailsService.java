@@ -1,8 +1,7 @@
 package com.TechZone.TechZone.service;
 
-import com.TechZone.TechZone.entity.Utilisateur;
-import com.TechZone.TechZone.repository.UtilisateurRepository;
-import org.springframework.security.core.userdetails.User;
+import com.TechZone.TechZone.entity.User;
+import com.TechZone.TechZone.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,21 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
 
-    public CustomUserDetailsService(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email : " + email));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return User.builder()
-                .username(utilisateur.getEmail())
-                .password(utilisateur.getMotDePasse())
-                .roles(utilisateur.getRole().name())
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
                 .build();
     }
 }

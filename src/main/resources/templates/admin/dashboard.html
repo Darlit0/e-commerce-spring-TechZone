@@ -35,7 +35,7 @@
                 <tbody>
                     <tr th:each="user : ${utilisateurs.content}">
                         <td th:text="${user.id}"></td>
-                        <td th:text="${user.nomUtilisateur}"></td>
+                        <td th:text="${user.username}"></td>
                         <td th:text="${user.email}"></td>
                         <td th:text="${user.role}"></td>
                         <td>
@@ -115,9 +115,9 @@
                             class="img-thumbnail">
                         <span th:unless="${produit.imagePath}" class="text-muted">Aucune</span>
                     </td>
-                    <td th:text="${produit.nom}"></td>
-                    <td th:text="${produit.nomCategorie}">Cat</td>
-                    <td th:text="${produit.prix} + ' €'"></td>
+                    <td th:text="${produit.name}"></td>
+                    <td th:text="${produit.categoryName}">Cat</td>
+                    <td th:text="${produit.price} + ' €'"></td>
                     <td th:text="${produit.stock}"></td>
                     <td>
                         <a th:href="@{/produits/modifier/{id}(id=${produit.id})}" class="btn btn-sm btn-warning">
@@ -183,7 +183,7 @@
                 <tbody>
                     <tr th:each="cat : ${categories.content}">
                         <td th:text="${cat.id}"></td>
-                        <td th:text="${cat.nom}"></td>
+                        <td th:text="${cat.name}"></td>
                         <td>
                             <a th:href="@{/admin/categories/modifier/{id}(id=${cat.id})}"
                                 class="btn btn-sm btn-warning">

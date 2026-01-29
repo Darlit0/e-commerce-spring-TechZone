@@ -6,36 +6,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.TechZone.TechZone.dto.request.UtilisateurCreateDto;
-import com.TechZone.TechZone.service.UtilisateurService;
+import com.TechZone.TechZone.dto.request.UserCreateDto;
+import com.TechZone.TechZone.service.UserService;
 
 @Controller
 public class LoginController {
 
-    private final UtilisateurService utilisateurService;
+    private final UserService utilisateurService;
 
-    public LoginController(UtilisateurService utilisateurService) {
+    public LoginController(UserService utilisateurService) {
         this.utilisateurService = utilisateurService;
     }
 
     @GetMapping("/login")
     public String login() {
-        return "/login"; // Cherche le fichier templates/login.html
+        return "/login"; 
     }
 
     @GetMapping("/register")
     public String register() {
-        return "register"; // Cherche le fichier templates/register.html
+        return "register"; 
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute UtilisateurCreateDto dto, RedirectAttributes redirectAttributes) {
+    public String registerUser(@ModelAttribute UserCreateDto dto, RedirectAttributes redirectAttributes) {
         try {
-            utilisateurService.creerUtilisateur(dto);
-            redirectAttributes.addFlashAttribute("success", "Inscription réussie ! Vous pouvez maintenant vous connecter.");
+            utilisateurService.createUser(dto);
+            redirectAttributes.addFlashAttribute("success", "Registration successful! You can now log in.");
             return "redirect:/login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de l'inscription : " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Registration error: " + e.getMessage());
             return "redirect:/register";
         }
     }

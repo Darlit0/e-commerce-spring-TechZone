@@ -15,20 +15,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")) // Désactivation CSRF pour les API
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
             .authorizeHttpRequests(auth -> auth
-                //.requestMatchers("/admin/**").permitAll()
+                .requestMatchers("/admin/utilisateurs/**").hasRole("ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/profil/**").authenticated() // Les endpoints profil nécessitent une authentification
+                .requestMatchers("/api/profil/**").authenticated()
                 .requestMatchers("/","/index", "/boutique/**", "/produits/**", "/api/**", "/css/**", "/js/**", "/webjars/**", "/error", "h2-console/**",
-                    "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/register").permitAll() // Swagger URLs + register
+                    "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/register").permitAll()
                 .anyRequest().authenticated()
             )
-            // Utilise ma page login personnalisée
             .formLogin(login -> login
-            .loginPage("/login") // Ta page de login perso
-            .loginProcessingUrl("/login") // L'URL où le formulaire envoie les données (POST)
-            .defaultSuccessUrl("/index", true) // <--- AJOUTE ÇA ! (true force la redirection)
+            .loginPage("/login")
+            .loginProcessingUrl("/login")
+            .defaultSuccessUrl("/index", true)
             .permitAll()
 )
             .logout(logout -> logout
