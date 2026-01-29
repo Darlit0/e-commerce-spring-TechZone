@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Accueil</title>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/index.css}" rel="stylesheet">
+</head>
+
+<body>
+
+    <div th:replace="~{navbar :: navbar}"></div>
+
+    <div class="container">
+        <h1 class="main-title">Nos Produits</h1>
+
+        <div class="content-grid">
+            <aside class="sidebar">
+                <div class="sidebar-header">Filtrer par</div>
+                <div class="sidebar-content">
+                    <form th:action="@{/index}" method="get">
+
+                        <div class="filter-group">
+                            <label class="filter-label">Catégorie</label>
+                            <select name="categorieId" class="filter-select">
+                                <option value="">Toutes les catégories</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                                    th:selected="${cat.id == currentCategorieId}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" name="enStock" value="true" id="checkStock"
+                                    th:checked="${currentEnStock}">
+                                <label for="checkStock">En stock uniquement</label>
+                            </div>
+
+                            <div class="checkbox-group">
+                                <input type="checkbox" name="promo" value="true" id="checkPromo"
+                                    th:checked="${currentPromo}">
+                                <label for="checkPromo">En promotion</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Appliquer</button>
+
+                        <a th:href="@{/index}" class="reset-link">Réinitialiser</a>
+                    </form>
+                </div>
+            </aside>
+
+            <section class="products-section">
+
+                <div th:if="${produitPage.empty}" class="empty-state">
+                    Aucun produit ne correspond à vos critères de recherche
+                </div>
+
+                <div class="products-grid" th:unless="${produitPage.empty}">
+                    <article class="product-card" th:each="produit : ${produitPage.content}">
+                        <div class="product-image-wrapper">
+                            <a th:href="@{/produit/{id}(id=${produit.id})}">
+                                <img th:if="${produit.imagePath}" th:src="${produit.imagePath}" th:alt="${produit.name}">
+                                <img th:unless="${produit.imagePath}" src="https://via.placeholder.com/300?text=Pas+d'image" alt="Image défaut">
+                            </a>
+                        </div>
+                        <div class="product-content">
+                            <a th:href="@{/produit/{id}(id=${produit.id})}">
+                                <h3 class="product-title" th:text="${produit.name}">Nom du produit</h3>
+                            </a>
+                            <p class="product-price" th:text="${produit.price} + ' €'">Prix</p>
+                        </div>
+                        <span class="badge badge-info" th:text="${produit.categoryName}">Égorie</span>
+                            <span th:if="${produit.status}" class="badge badge-success">En Stock</span>
+                            <span th:unless="${produit.status}" class="badge badge-danger">Rupture de stock</span>
+                    </article>
+                </div>
+
+                <nav th:if="${produitPage.totalPages > 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}"
+                            th:classappend="${i == produitPage.number} ? 'active'">
+                            <a class="page-link"
+                                th:href="@{/index(page=${i}, size=${produitPage.size}, categorieId=${currentCategorieId}, enStock=${currentEnStock}, promo=${currentPromo})}"
+                                th:text="${i + 1}">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</html>

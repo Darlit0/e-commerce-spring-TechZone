@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - TechZone</title>
+    <link th:href="@{/css/auth.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-card">
+        <h2 class="auth-title">Inscription</h2>
+        
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <form th:action="@{/register}" method="post">
+            <div class="form-group">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" class="form-control" 
+                       placeholder="Minimum 3 caractères" required minlength="3" maxlength="20">
+                <small class="form-text">Entre 3 et 20 caractères</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control" 
+                       placeholder="exemple@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" id="password" name="password" class="form-control" 
+                       placeholder="Minimum 6 caractères" required minlength="6" maxlength="100">
+                <small class="form-text">Entre 6 et 100 caractères</small>
+            </div>
+            
+            <button type="submit" class="btn btn-success">S'inscrire</button>
+            
+            <div class="text-center">
+                <p>Déjà un compte ? <a href="/login" class="btn btn-outline-primary">Se connecter</a></p>
+            </div>
+        </form>
+        
+        <div class="mt-3 text-center">
+            <a href="/">Retour à l'accueil</a>
+        </div>
+    </div>
+</body>
+</html>

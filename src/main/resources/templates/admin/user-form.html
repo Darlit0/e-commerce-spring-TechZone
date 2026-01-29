@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Modifier un utilisateur' : 'Nouvel Utilisateur'">Utilisateur</title>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{navbar :: navbar}"></div>
+
+<div class="container">
+    <h2>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span th:text="${isEdit} ? 'Modifier un utilisateur' : 'Créer un nouvel utilisateur'"></span>
+    </h2>
+
+    <div class="card">
+        <div class="card-body" style="padding: 30px;">
+            <form th:action="${isEdit} ? @{/admin/utilisateurs/modifier/{id}(id=${userId})} : @{/admin/utilisateurs}" 
+                  th:object="${userRequest}" 
+                  method="post">
+                  
+                <div class="form-group">
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" 
+                           id="username" 
+                           th:field="*{username}" 
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('username')}" 
+                         th:errors="*{username}" 
+                         class="invalid-feedback"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" 
+                           id="email" 
+                           th:field="*{email}" 
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('email')}" 
+                         th:errors="*{email}" 
+                         class="invalid-feedback"></div>
+                </div>
+
+                <div class="form-group" th:unless="${isEdit}">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" 
+                           id="password" 
+                           th:field="*{password}" 
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('password')}" 
+                         th:errors="*{password}" 
+                         class="invalid-feedback"></div>
+                </div>
+                
+                <input type="hidden" th:if="${isEdit}" name="password" value="dummy" />
+
+                <div class="form-group">
+                    <label for="role" class="form-label">Rôle</label>
+                    <select id="role" 
+                            th:field="*{role}" 
+                            class="form-control"
+                            th:classappend="${#fields.hasErrors('role')} ? 'is-invalid' : ''">
+                        <option th:each="roleValue : ${T(com.TechZone.TechZone.entity.Role).values()}"
+                                th:value="${roleValue}" 
+                                th:text="${roleValue}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('role')}" 
+                         th:errors="*{role}" 
+                         class="invalid-feedback"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; margin-right: 6px;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Enregistrer
+                </button>
+                <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
+                    Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Modifier une catégorie' : 'Nouvelle Catégorie'">Catégorie</title>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{navbar :: navbar}"></div>
+
+<div class="container">
+    <h2>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+        </svg>
+        <span th:text="${isEdit} ? 'Modifier une catégorie' : 'Créer une nouvelle catégorie'"></span>
+    </h2>
+
+    <div class="card">
+        <div class="card-body" style="padding: 30px;">
+            <form th:action="${isEdit} ? @{/admin/categories/modifier/{id}(id=${categorieId})} : @{/admin/categories}" 
+                  th:object="${categorieRequest}" method="post">
+                <div class="form-group">
+                    <label for="nom" class="form-label">Nom de la catégorie</label>
+                    <input type="text" id="nom" th:field="*{nom}" class="form-control"
+                           th:classappend="${#fields.hasErrors('nom')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}" class="invalid-feedback"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; margin-right: 6px;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Enregistrer
+                </button>
+                <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
+                    Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
