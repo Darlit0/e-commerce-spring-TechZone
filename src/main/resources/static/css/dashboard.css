@@ -1,4 +1,3 @@
-/* Pages avec Tables et Dashboards */
 * {
     margin: 0;
     padding: 0;
@@ -28,7 +27,6 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* Grid Layout */
 .row {
     display: grid;
     gap: 30px;
@@ -44,7 +42,6 @@ h1 {
     }
 }
 
-/* Card */
 .card {
     background: white;
     border: 1px solid #e0e0e0;
@@ -64,7 +61,6 @@ h1 {
     padding: 25px;
 }
 
-/* Alert */
 .alert {
     padding: 16px 20px;
     border-radius: 3px;
@@ -95,7 +91,6 @@ h1 {
     font-weight: 600;
 }
 
-/* Table */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -126,7 +121,6 @@ h1 {
     background: #fafafa;
 }
 
-/* Table Item with Image */
 .table-item-with-image {
     display: flex;
     align-items: center;
@@ -145,7 +139,6 @@ h1 {
     font-weight: 500;
 }
 
-/* Price Display */
 .price {
     font-weight: 600;
     color: #2c2c2c;
@@ -157,7 +150,6 @@ h1 {
     font-size: 1.1rem;
 }
 
-/* Summary Box */
 .summary-box {
     background: #fafafa;
     padding: 20px;
@@ -182,7 +174,6 @@ h1 {
     color: #2c2c2c;
 }
 
-/* Buttons */
 .btn {
     padding: 12px 24px;
     border: none;
@@ -234,7 +225,6 @@ h1 {
     width: 100%;
 }
 
-/* Sidebar Nav (for Profile) */
 .sidebar-nav {
     background: white;
     border: 1px solid #e0e0e0;
@@ -275,7 +265,6 @@ h1 {
     color: #2c2c2c;
 }
 
-/* Tab Content */
 .tab-content {
     display: none;
 }
@@ -284,7 +273,6 @@ h1 {
     display: block;
 }
 
-/* Form */
 .form-group {
     margin-bottom: 20px;
 }
@@ -311,12 +299,10 @@ h1 {
     border-color: #666;
 }
 
-/* Hidden */
 .hidden {
     display: none !important;
 }
 
-/* Loading Spinner */
 .spinner {
     display: inline-block;
     width: 20px;
@@ -332,7 +318,6 @@ h1 {
     100% { transform: rotate(360deg); }
 }
 
-/* Text Utilities */
 .text-center {
     text-align: center;
 }
@@ -341,7 +326,6 @@ h1 {
     color: #666;
 }
 
-/* Spacing Utilities */
 .mt-3 {
     margin-top: 20px;
 }
@@ -359,7 +343,6 @@ h1 {
     padding-bottom: 15px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .table {
         font-size: 0.85rem;

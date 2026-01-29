@@ -10,10 +10,7 @@
     <div class="auth-card">
         <h2 class="auth-title">Inscription</h2>
         
-        <!-- Message d'erreur si présent -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-        
-        <!-- Message de succès -->
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
         <form th:action="@{/register}" method="post">

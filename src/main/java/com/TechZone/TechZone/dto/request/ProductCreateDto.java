@@ -24,8 +24,6 @@ public class ProductCreateDto {
     @NotNull(message = "La catégorie est obligatoire")
     private Long categorieId;
 
-    
-    @NotBlank(message = "L'URL de l'image est obligatoire")
     private String imageUrl;
 
     private boolean promotion = false;

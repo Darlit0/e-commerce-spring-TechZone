@@ -43,8 +43,7 @@ public class AdminProduitPageController {
     public String afficherFormulaire(Model model) {
         model.addAttribute("produitRequest", new ProductCreateDto());
         
-        
-        model.addAttribute("listeCategories", CategorieService.listCategories());
+        model.addAttribute("listeCategories", this.CategorieService.listCategories());
         model.addAttribute("isEdit", false);
         
         return "admin/produit-form";
@@ -55,7 +54,7 @@ public class AdminProduitPageController {
     public String enregistrerProduit(@Valid @ModelAttribute("produitRequest") ProductCreateDto produitRequest, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             
-            model.addAttribute("listeCategories", CategorieService.listCategories());
+            model.addAttribute("listeCategories", this.CategorieService.listCategories());
             model.addAttribute("isEdit", false);
             return "admin/produit-form";
         }
@@ -78,7 +77,7 @@ public class AdminProduitPageController {
         
         model.addAttribute("produitRequest", dto);
         model.addAttribute("produitId", id);
-        model.addAttribute("listeCategories", CategorieService.listCategories());
+        model.addAttribute("listeCategories", this.CategorieService.listCategories());
         model.addAttribute("isEdit", true);
         return "admin/produit-form";
     }
@@ -90,7 +89,7 @@ public class AdminProduitPageController {
                                  Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("produitId", id);
-            model.addAttribute("listeCategories", CategorieService.listCategories());
+            model.addAttribute("listeCategories", this.CategorieService.listCategories());
             model.addAttribute("isEdit", true);
             return "admin/produit-form";
         }

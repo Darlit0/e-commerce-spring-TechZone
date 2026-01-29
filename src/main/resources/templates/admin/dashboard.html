@@ -60,7 +60,6 @@
                 </tbody>
             </table>
 
-            <!-- Pagination Utilisateurs -->
             <nav th:if="${utilisateurs.totalPages > 1}">
                 <ul class="pagination">
                     <nav th:if="${utilisateurs.totalPages > 1}">
@@ -140,7 +139,6 @@
             </tbody>
         </table>
 
-        <!-- Pagination Produits -->
         <nav th:if="${produits.totalPages > 1}">
             <ul class="pagination">
                 <li class="page-item" th:classappend="${produits.number == 0} ? 'disabled'">
@@ -162,7 +160,6 @@
         </div>
     </div>
 
-    <!-- CATÉGORIES -->
     <div class="container mt-4">
         <div class="card">
         <div class="card-header">
@@ -206,7 +203,6 @@
                 </tbody>
             </table>
 
-            <!-- Pagination Catégories -->
             <nav th:if="${categories.totalPages > 1}">
                 <ul class="pagination">
                     <li class="page-item" th:classappend="${categories.number == 0} ? 'disabled'">

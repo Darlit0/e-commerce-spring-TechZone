@@ -30,41 +30,36 @@
                 </div>
 
                 <div class="product-info-section">
-
                     <div>
                         <span class="badge badge-info" th:text="${produit.categoryName}">Cat</span>
                         <span th:if="${produit.status}" class="badge badge-success">En Stock</span>
                         <span th:unless="${produit.status}" class="badge badge-danger">Rupture de stock</span>
                     </div>
 
-                    <h1 class="product-title" th:text="${produit.nom}">Nom du Produit</h1>
+                    <h1 class="product-title" th:text="${produit.name}">Nom du Produit</h1>
 
                     <div>
-                        <span class="product-price" th:text="${produit.prix} + ' €'">99 €</span>
+                        <span class="product-price" th:text="${produit.price} + ' €'">99 €</span>
                         <span class="price-note">(TVA incluse)</span>
                     </div>
 
-                    <p class="product-description" th:text="${produit.descriptionCourte}">Accroche...</p>
+                    <p class="product-description" th:text="${produit.shortDescription}">Accroche...</p>
 
                     <hr class="divider">
 
                     <h5 class="section-title">Description détaillée :</h5>
-                    <p th:text="${produit.descriptionLongue != null} ? ${produit.descriptionLongue} : 'Aucune description détaillée disponible.'">
+                    <p th:text="${produit.longDescription != null} ? ${produit.longDescription} : 'Aucune description détaillée disponible.'">
                         Description complète ici...
                     </p>
 
                     <div>
-                        
                         <div th:if="${produit.status}">
-                            
                             <form id="ajouterPanierForm" th:action="@{/panier/ajouter}" method="post">
-                                
                                 <input type="hidden" name="produitId" th:value="${produit.id}">
 
                                 <div class="form-row">
                                     <input type="number" name="quantite" class="quantity-input" 
                                            value="1" min="1" th:max="${produit.stock}" required>
-                                    
                                     <div sec:authorize="isAuthenticated()">
                                         <button type="submit" class="btn btn-dark btn-lg btn-full">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-right: 6px;">
@@ -75,7 +70,6 @@
                                             Ajouter au panier
                                         </button>
                                     </div>
-
                                     <div sec:authorize="!isAuthenticated()">
                                         <a th:href="@{/login}" class="btn btn-warning btn-lg btn-full">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; margin-right: 6px;">
@@ -107,7 +101,6 @@
         </div>
     </div>
 
-    <!-- Modal de confirmation -->
     <div class="modal-overlay" id="modalPanierAjoute">
         <div class="modal-content">
             <div class="modal-header">

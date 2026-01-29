@@ -60,6 +60,7 @@ public class ProductService {
         produit.setPrice(dto.getPrix());
         produit.setStock(dto.getStock());
         produit.setShortDescription(dto.getDescriptionCourte());
+        produit.setLongDescription(dto.getDescriptionLongue());
         produit.setImagePath(dto.getImageUrl()); 
         produit.setStatus(true);
 
@@ -87,6 +88,7 @@ public class ProductService {
         produit.setPrice(dto.getPrix());
         produit.setStock(dto.getStock());
         produit.setShortDescription(dto.getDescriptionCourte());
+        produit.setLongDescription(dto.getDescriptionLongue());
         produit.setImagePath(dto.getImageUrl()); 
         produit.setStatus(true);
 

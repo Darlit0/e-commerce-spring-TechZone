@@ -17,7 +17,6 @@
         <h1 class="main-title">Nos Produits</h1>
 
         <div class="content-grid">
-            <!-- Sidebar Filtres -->
             <aside class="sidebar">
                 <div class="sidebar-header">Filtrer par</div>
                 <div class="sidebar-content">
@@ -54,20 +53,18 @@
                 </div>
             </aside>
 
-            <!-- Section Produits -->
             <section class="products-section">
 
-                <!-- Message vide -->
                 <div th:if="${produitPage.empty}" class="empty-state">
                     Aucun produit ne correspond à vos critères de recherche
                 </div>
 
-                <!-- Grille produits -->
                 <div class="products-grid" th:unless="${produitPage.empty}">
                     <article class="product-card" th:each="produit : ${produitPage.content}">
                         <div class="product-image-wrapper">
                             <a th:href="@{/produit/{id}(id=${produit.id})}">
                                 <img th:if="${produit.imagePath}" th:src="${produit.imagePath}" th:alt="${produit.name}">
+                                <img th:unless="${produit.imagePath}" src="https://via.placeholder.com/300?text=Pas+d'image" alt="Image défaut">
                             </a>
                         </div>
                         <div class="product-content">
@@ -82,7 +79,6 @@
                     </article>
                 </div>
 
-                <!-- Pagination -->
                 <nav th:if="${produitPage.totalPages > 1}">
                     <ul class="pagination">
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}"

@@ -10,11 +10,10 @@
     <div class="auth-card">
         <h2 class="auth-title">Connexion</h2>
         
-        <!-- Message d'erreur (paramètre ?error) -->
+
         <div th:if="${param.error}" class="alert alert-danger">
             Email ou mot de passe incorrect.
         </div>
-        <!-- Message de déconnexion (paramètre ?logout) -->
         <div th:if="${param.logout}" class="alert alert-success">
             Vous avez été déconnecté avec succès.
         </div>

@@ -10,4 +10,4 @@ public class TechZoneApplication {
 		SpringApplication.run(TechZoneApplication.class, args);
 	}
 
-}
+	}

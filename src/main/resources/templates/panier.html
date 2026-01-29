@@ -20,12 +20,11 @@
             </svg>
             Votre Panier
         </h1>
-
-        <div th:if="${panier == null or panier.ligneCommandes.empty}" class="alert alert-warning">
+        <div th:if="${panier == null or panier.orderLines.empty}" class="alert alert-warning">
             Votre panier est vide. <a th:href="@{/index}">Aller faire du shopping !</a>
         </div>
 
-        <div th:if="${panier != null and !panier.ligneCommandes.empty}" class="row two-cols">
+        <div th:if="${panier != null and !panier.orderLines.empty}" class="row two-cols">
             <div>
                 <div class="card">
                     <div class="card-body">
@@ -40,7 +39,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="ligne : ${panier.ligneCommandes}">
+                                <tr th:each="ligne : ${panier.orderLines}">
                                     <td>
                                         <div class="table-item-with-image">
                                             <img th:if="${ligne.product.imagePath}" th:src="${ligne.product.imagePath}" 
@@ -50,9 +49,7 @@
                                     </td>
                                     <td class="price" th:text="${ligne.unitPrice} + ' €'"></td>
                                     <td th:text="${ligne.quantity}">1</td>
-                                    
                                     <td class="price" th:text="${ligne.quantity * ligne.unitPrice} + ' €'"></td>
-                                    
                                     <td>
                                         <form th:action="@{/panier/supprimer}" method="post">
                                             <input type="hidden" name="ligneId" th:value="${ligne.id}">

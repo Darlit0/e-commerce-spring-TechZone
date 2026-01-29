@@ -23,7 +23,6 @@
 
             <div class="navbar-content" id="navbarContent">
                 <div class="navbar-actions">
-                    
                     <div sec:authorize="isAuthenticated()">
                         <a th:href="@{/panier}" class="btn-navbar">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -34,7 +33,6 @@
                             Panier
                         </a>
                     </div>
-                    
                     <div sec:authorize="isAnonymous()">
                         <a th:href="@{/login}" class="btn-navbar">
                             Connexion
@@ -50,21 +48,18 @@
                             <span sec:authentication="name">Utilisateur</span>
                         </button>
 
-                        <ul class="dropdown-menu" id="userDropdown">                            
+                        <ul class="dropdown-menu" id="userDropdown">
                             <li>
                                 <a class="dropdown-item" th:href="@{/profil}">
                                     Mon Profil
                                 </a>
                             </li>
-                            
                             <li sec:authorize="hasRole('ADMIN')">
                                 <a class="dropdown-item" th:href="@{/admin/dashboard}">
                                     Admin Dashboard
                                 </a>
                             </li>
-                            
                             <li><hr class="dropdown-divider"></li>
-                            
                             <li>
                                 <form th:action="@{/logout}" method="post" style="margin: 0;">
                                     <button type="submit" class="dropdown-item text-danger">
@@ -92,7 +87,6 @@
             dropdown.classList.toggle('show');
         }
         
-        // Close dropdown when clicking outside
         document.addEventListener('click', function() {
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) {

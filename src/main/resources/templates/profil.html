@@ -82,7 +82,6 @@
             </div>
 
             <div>
-                <!-- ONGLET 1 : Mes Informations -->
                 <div class="tab-content active" id="informations">
                     <div class="card">
                         <div class="card-header">Mes Informations Personnelles</div>
@@ -123,7 +122,6 @@
                     </div>
                 </div>
 
-                <!-- ONGLET 2 : Mes Commandes -->
                 <div class="tab-content" id="commandes">
                     <div class="card">
                         <div class="card-header">Historique de mes Commandes</div>
@@ -146,31 +144,25 @@
                 event.preventDefault();
             }
             
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Remove active from all nav links
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
             
-            // Show selected tab
             document.getElementById(tabId).classList.add('active');
-            
-            // Add active to clicked link
+
             if (event) {
                 event.target.classList.add('active');
             }
             
-            // Load commandes if that tab is selected
             if (tabId === 'commandes') {
                 chargerCommandes();
             }
         }
         
-        // Charger les informations du profil
         async function chargerProfil() {
             try {
                 const response = await fetch('/api/profil/info');
@@ -182,7 +174,6 @@
             }
         }
 
-        // Sauvegarder les modifications du profil
         document.getElementById('profilForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -223,10 +214,10 @@
             }
         });
 
-        // Charger l'historique des commandes
+
         async function chargerCommandes() {
             try {
-                const response = await fetch('/api/profil/commandes');
+                const response = await fetch('/api/profil/orders');
                 const commandes = await response.json();
                 
                 const listeDiv = document.getElementById('listeCommandes');
@@ -287,7 +278,6 @@
             }
         }
 
-        // Charger le profil au chargement de la page
         chargerProfil();
     </script>
 </body>
