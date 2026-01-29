@@ -25,7 +25,7 @@ public class HomeController {
     public String afficherAccueil(
             Model model,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "9") int size,
             // Nouveaux paramètres (optionnels par défaut grâce aux wrappers Long/Boolean)
             @RequestParam(required = false) Long categorieId,
             @RequestParam(required = false) Boolean enStock,

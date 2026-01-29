@@ -22,41 +22,33 @@
                 <div class="sidebar-header">Filtrer par</div>
                 <div class="sidebar-content">
                     <form th:action="@{/index}" method="get">
-                        
+
                         <div class="filter-group">
                             <label class="filter-label">Catégorie</label>
                             <select name="categorieId" class="filter-select">
                                 <option value="">Toutes les catégories</option>
-                                <option th:each="cat : ${categories}" 
-                                        th:value="${cat.id}" 
-                                        th:text="${cat.nom}"
-                                        th:selected="${cat.id == currentCategorieId}">
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.nom}"
+                                    th:selected="${cat.id == currentCategorieId}">
                                 </option>
                             </select>
                         </div>
 
                         <div class="filter-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" 
-                                       name="enStock" 
-                                       value="true" 
-                                       id="checkStock" 
-                                       th:checked="${currentEnStock}">
+                                <input type="checkbox" name="enStock" value="true" id="checkStock"
+                                    th:checked="${currentEnStock}">
                                 <label for="checkStock">En stock uniquement</label>
                             </div>
 
                             <div class="checkbox-group">
-                                <input type="checkbox" 
-                                       name="promo" 
-                                       value="true" 
-                                       id="checkPromo" 
-                                       th:checked="${currentPromo}">
+                                <input type="checkbox" name="promo" value="true" id="checkPromo"
+                                    th:checked="${currentPromo}">
                                 <label for="checkPromo">En promotion</label>
                             </div>
                         </div>
 
                         <button type="submit" class="btn-primary">Appliquer</button>
-                        
+
                         <a th:href="@{/index}" class="reset-link">Réinitialiser</a>
                     </form>
                 </div>
@@ -75,30 +67,29 @@
                     <article class="product-card" th:each="produit : ${produitPage.content}">
                         <div class="product-image-wrapper">
                             <a th:href="@{/produit/{id}(id=${produit.id})}">
-                                <img th:if="${produit.imagePath}" 
-                                     th:src="${produit.imagePath}"
-                                     th:alt="${produit.nom}">
+                                <img th:if="${produit.imagePath}" th:src="${produit.imagePath}" th:alt="${produit.nom}">
                             </a>
                         </div>
                         <div class="product-content">
                             <a th:href="@{/produit/{id}(id=${produit.id})}">
                                 <h3 class="product-title" th:text="${produit.nom}">Nom du produit</h3>
                             </a>
-                            <span class="product-category" th:text="${produit.nomCategorie}">Catégorie</span>
                             <p class="product-price" th:text="${produit.prix} + ' €'">Prix</p>
                         </div>
+                        <span class="badge badge-info" th:text="${produit.nomCategorie}">Catégorie</span>
+                            <span th:if="${produit.status}" class="badge badge-success">En Stock</span>
+                            <span th:unless="${produit.status}" class="badge badge-danger">Rupture de stock</span>
                     </article>
                 </div>
 
                 <!-- Pagination -->
                 <nav th:if="${produitPage.totalPages > 1}">
                     <ul class="pagination">
-                        <li class="page-item" 
-                            th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}"
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, produitPage.totalPages - 1)}"
                             th:classappend="${i == produitPage.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/index(page=${i}, size=${produitPage.size}, categorieId=${currentCategorieId}, enStock=${currentEnStock}, promo=${currentPromo})}"
-                               th:text="${i + 1}">
+                                th:href="@{/index(page=${i}, size=${produitPage.size}, categorieId=${currentCategorieId}, enStock=${currentEnStock}, promo=${currentPromo})}"
+                                th:text="${i + 1}">
                             </a>
                         </li>
                     </ul>
