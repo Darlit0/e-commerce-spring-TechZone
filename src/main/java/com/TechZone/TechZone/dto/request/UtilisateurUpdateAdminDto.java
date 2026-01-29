@@ -14,6 +14,9 @@ public class UtilisateurUpdateAdminDto {
     @Email(message = "L'email doit être valide")
     private String email;
 
+    // Champ password pour la validation du formulaire (sera ignoré lors de la mise à jour)
+    private String password;
+
     @Enumerated
     private Role role;
 
@@ -32,6 +35,14 @@ public class UtilisateurUpdateAdminDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Role getRole() {

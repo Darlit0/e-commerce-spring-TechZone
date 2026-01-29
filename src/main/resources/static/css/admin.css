@@ -47,12 +47,13 @@ h2 {
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
     background: #2c2c2c;
     color: white;
-    padding: 15px 20px;
+    padding: 18px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -61,10 +62,12 @@ h2 {
 .card-header h2 {
     color: white;
     margin: 0;
+    font-size: 1.2rem;
 }
 
 .card-body {
     padding: 0;
+    overflow-x: auto;
 }
 
 /* Table */
@@ -188,6 +191,9 @@ h2 {
     gap: 5px;
     list-style: none;
     padding: 20px;
+    margin: 0;
+    background: #fafafa;
+    border-top: 1px solid #e0e0e0;
 }
 
 .page-item {
