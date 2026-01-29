@@ -39,12 +39,12 @@ public class AdminUtilisateurController {
 
     @GetMapping("/modifier/{id}")
     public String afficherFormulaireModification(@PathVariable Long id, Model model) {
-        // Récupérer l'utilisateur directement via le service
         Utilisateur utilisateur = utilisateurService.trouverUtilisateurEntity(id);
         
         UtilisateurUpdateAdminDto dto = new UtilisateurUpdateAdminDto();
         dto.setUsername(utilisateur.getNomUtilisateur());
         dto.setEmail(utilisateur.getEmail());
+        dto.setPassword("dummy"); // Valeur fictive pour passer la validation Thymeleaf
         dto.setRole(utilisateur.getRole());
         
         model.addAttribute("userRequest", dto);
