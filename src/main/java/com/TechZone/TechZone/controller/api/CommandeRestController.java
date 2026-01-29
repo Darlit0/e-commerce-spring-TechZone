@@ -1,40 +1,31 @@
 package com.TechZone.TechZone.controller.api;
 
-import com.TechZone.TechZone.dto.response.CommandeResponse;
-import com.TechZone.TechZone.entity.Commande;
-import com.TechZone.TechZone.repository.CommandeRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.TechZone.TechZone.dto.response.CommandeDetailResponse;
+import com.TechZone.TechZone.service.CommandeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/commandes")
+@RestController // Indique que c'est une API REST (retourne du JSON, pas du HTML)
+@RequestMapping("/api/commandes") // Préfixe pour toutes les routes de ce contrôleur
 public class CommandeRestController {
 
-    private final CommandeRepository commandeRepository;
+    private final CommandeService commandeService;
 
-    public CommandeRestController(CommandeRepository commandeRepository) {
-        this.commandeRepository = commandeRepository;
+    public CommandeRestController(CommandeService commandeService) {
+        this.commandeService = commandeService;
     }
 
-    @GetMapping("/all")
-    public List<CommandeResponse> getAllCommandes() {
-        return commandeRepository.findAll().stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
-    }
-
-    private CommandeResponse toResponse(Commande commande) {
-        return new CommandeResponse(
-            commande.getId(),
-            commande.getUtilisateur().getId(),
-            commande.getUtilisateur().getNomUtilisateur(),
-            commande.getDateCommande(),
-            commande.getStatus(),
-            commande.getTotal()
-        );
+    /**
+     * Récupérer l'historique des commandes d'un utilisateur spécifique.
+     * URL: GET http://localhost:8080/api/commandes/utilisateur/{id}
+     */
+    @GetMapping("/utilisateur/{id}")
+    public ResponseEntity<List<CommandeDetailResponse>> getHistoriqueUtilisateur(@PathVariable Long id) {
+        List<CommandeDetailResponse> historique = commandeService.getCommandesUtilisateur(id);
+        
+        // On retourne 200 OK avec la liste (même si elle est vide, c'est une réponse valide)
+        return ResponseEntity.ok(historique);
     }
 }
